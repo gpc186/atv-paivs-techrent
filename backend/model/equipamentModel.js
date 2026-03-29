@@ -1,6 +1,6 @@
 const { query } = require('../config/database');
 
-class EquipamentModel {
+class EquipamentoModel {
     static async create({nome, categoria, patrimonio, status, descricao}){
         const sql = `INSERT INTO equipamentos (nome, categoria, patrimonio, status,descricao) values (?,?,?,?,?)`
         const result = await query(sql, [nome, categoria, patrimonio, status, descricao]);
@@ -19,19 +19,30 @@ class EquipamentModel {
         return result[0] || null;
     }
 
-    static async equipamentosOperacionais(){
+    static async findAll(){
+        const sql = `SELECT * FROM equipamentos`;
+        return await query(sql, []);
+    }
+
+    static async listFunctional(){
         const sql = `SELECT * FROM view_equipamentos_operacionais`
         return await query(sql, []);
     }
 
-    static async resumoEquipamentos(){
+    static async viewEquipament(){
         const sql = `SELECT * FROM view_resumo_equipamentos`
         return await query(sql, []);
     }
 
-    static async update(id, {nome, categoria, status}){
+    static async update(id, {nome, categoria, status, descricao}){
         const sql = `UPDATE FROM equipamentos SET nome = ?, categoria = ?, status = ?, descricao = ? WHERE id = ?`;
         const result = await query(sql, [nome, categoria, status, descricao, id]);
+        return result.affectedRows > 0;
+    }
+
+    static async updateStatus({ id, status }){
+        const sql = `UPDATE equipamentos SET status = ? WHERE id = ?`;
+        const result = await query(sql, [status, id]);
         return result.affectedRows > 0;
     }
 
@@ -42,4 +53,4 @@ class EquipamentModel {
     }
 }
 
-module.exports = EquipamentModel;
+module.exports = EquipamentoModel;

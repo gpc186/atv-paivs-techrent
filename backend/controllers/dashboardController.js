@@ -4,20 +4,35 @@
 // Usa as VIEWS do banco para retornar dados agregados.
 // TODO (alunos): implementar cada função abaixo.
 
-const db = require('../config/database');
+const ChamadaModel = require("../model/chamadaModel");
+const EquipamentoModel = require("../model/EquipamentoModel");
 
-// GET /dashboard/admin - resumo geral de chamados e equipamentos (apenas admin)
-// Usa as views: view_resumo_chamados e view_resumo_equipamentos
-const resumoAdmin = async (req, res) => {
-  // TODO
-  res.json({ mensagem: 'resumoAdmin - não implementado' });
-};
+class DashboardController {
+  static async viewAdmin(req, res) {
+    try {
+      const [chamados, equipamentos] = await Promise.all([
+        ChamadaModel.viewChamadas(),
+        EquipamentoModel.viewEquipament()
+      ]);
 
-// GET /dashboard/tecnico - chamados abertos/em andamento (técnico/admin)
-// Usa a view: view_painel_tecnico
-const painelTecnico = async (req, res) => {
-  // TODO
-  res.json({ mensagem: 'painelTecnico - não implementado' });
-};
+      return res.status(200).json({ ok: true, estatisticas_chamados: chamados, estatisticas_equipamentos: equipamentos, gerado_em: new Date() });
+    } catch (erro) {
+      console.error("Erro ao gerar dashboard admin:", erro);
+      return res.status(500).json({ erro: "Erro ao carregar dados do painel administrativo." });
+    }
+  }
 
-module.exports = { resumoAdmin, painelTecnico };
+  static async viewTecnico(req, res) {
+    try {
+      
+      const painel = await ChamadaModel.viewTecnico();
+
+      return res.status(200).json({ ok: true, painel});
+    } catch (erro) {
+      console.error("Erro ao carregar painel técnico:", erro);
+      return res.status(500).json({ erro: "Erro ao carregar a fila de chamados!" });
+    }
+  }
+}
+
+module.exports = DashboardController;
