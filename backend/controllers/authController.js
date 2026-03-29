@@ -72,7 +72,7 @@ class AuthController {
 
       const token = generateJWT({id: userExists.id, nome: userExists.nome, email: userExists.email, nivel_acesso: userExists.nivel_acesso});
 
-      return res.status(200).json({ ok: true, mensagem: "Usuario logado com sucesso!", usuario: usuarioSemSenha, JWT: token });
+      return res.status(200).json({ ok: true, mensagem: "Usuario logado com sucesso!", usuario: usuarioSemSenha, token });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ error: "Erro interno do servidor!" });

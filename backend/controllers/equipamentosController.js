@@ -4,7 +4,7 @@
 // TODO (alunos): implementar cada função abaixo.
 // Cada função recebe (req, res) e deve retornar uma resposta JSON.
 
-const EquipamentoModel = require('../model/EquipamentoModel');
+const EquipamentoModel = require('../model/equipamentModel');
 
 
 class EquipamentoController {
@@ -66,7 +66,7 @@ class EquipamentoController {
         return res.status(400).json({ erro: "O novo status é obrigatório!" });
       }
 
-      const atualizado = await EquipamentoModel.updateStatus(id, status);
+      const atualizado = await EquipamentoModel.updateStatus({id, status});
 
       if (!atualizado) {
         return res.status(404).json({ erro: "Equipamento não encontrado!" });
@@ -84,7 +84,7 @@ class EquipamentoController {
       const { id } = req.params;
       const { nome, categoria, status, descricao } = req.body;
 
-      if (!nome || !categoria || !status) {
+      if (!nome || !categoria) {
         return res.status(400).json({ erro: "Nome, categoria e status são obrigatórios para a atualização!" });
       }
 

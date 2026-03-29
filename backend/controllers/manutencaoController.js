@@ -4,7 +4,7 @@
 // TODO (alunos): implementar cada função abaixo.
 
 const ManutencaoModel = require('../model/manutencaoModel');
-const EquipamentoModel = require('../model/EquipamentoModel');
+const EquipamentoModel = require('../model/equipamentModel');
 const ChamadaModel = require('../model/chamadaModel');
 
 class ManutencaoController {
@@ -38,10 +38,11 @@ class ManutencaoController {
 
       const novaManutencaoId = await ManutencaoModel.create({ chamado_id, equipamento_id, tecnico_id, descricao });
 
-      await ChamadaModel.updateStatus(chamado_id, 'resolvido');
+      await ChamadaModel.updateStatus({ id: chamado_id, status: 'resolvido'});
 
       const novoStatusEquipamento = status_equipamento || 'operacional';
-      await EquipamentoModel.updateStatus(equipamento_id, novoStatusEquipamento);
+      
+      await EquipamentoModel.updateStatus({id: equipamento_id, status: novoStatusEquipamento});
 
       return res.status(201).json({ ok: true, mensagem: `Manutenção registrada! Chamado resolvido. Máquina: ${novoStatusEquipamento}!`, manutencao_id: novaManutencaoId });
 

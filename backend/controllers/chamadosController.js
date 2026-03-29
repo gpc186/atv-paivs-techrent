@@ -9,7 +9,7 @@
 
 const { query } = require('../config/database');
 // Vamos usar o model de Equipamento que fizemos para reaproveitar a função de status!
-const EquipamentoModel = require('../model/EquipamentoModel');
+const EquipamentoModel = require('../model/equipamentModel');
 const ChamadaModel = require('../model/chamadaModel');
 
 class ChamadaController {
@@ -56,9 +56,9 @@ class ChamadaController {
         return res.status(400).json({ erro: "Título, descrição e equipamento são obrigatórios." });
       }
 
-      const novoChamado = await ChamadaModel.create({ titulo, descricao, cliente_id, equipamento_id, prioridade: prioridade || "media", status: "pendente" });
+      const novoChamado = await ChamadaModel.create({ titulo, descricao, cliente_id, equipamento_id, tecnico_id: null, prioridade: prioridade || "media", status: "pendente" });
 
-      await EquipamentoModel.updateStatus(equipamento_id, 'em_manutencao');
+      await EquipamentoModel.updateStatus({id: equipamento_id, status: 'em_manutencao'});
 
       return res.status(201).json({ ok: true, mensagem: "Chamado aberto com sucesso! O equipamento agora consta como 'em manutenção'!", chamado_id: novoChamado });
     } catch (erro) {
@@ -82,13 +82,13 @@ class ChamadaController {
       }
 
       if(tecnico_id){
-        await ChamadaModel.setTecnico(id, tecnico_id);
+        await ChamadaModel.setTecnico({id, tecnico_id});
       }
 
       await ChamadaModel.updateStatus({ id, status });
 
       if (status === 'resolvido' || status === 'cancelado') {
-        await EquipamentoModel.updateStatus(chamado.equipamento_id, 'operacional');
+        await EquipamentoModel.updateStatus({ id: chamado.equipamento_id, status: 'operacional'});
       }
 
       return res.status(200).json({ ok: true, mensagem: "Status atualizado com sucesso!" });

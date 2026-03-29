@@ -5,7 +5,7 @@
 // TODO (alunos): implementar cada função abaixo.
 
 const ChamadaModel = require("../model/chamadaModel");
-const EquipamentoModel = require("../model/EquipamentoModel");
+const EquipamentoModel = require("../model/equipamentModel");
 
 class DashboardController {
   static async viewAdmin(req, res) {

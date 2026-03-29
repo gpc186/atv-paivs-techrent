@@ -39,16 +39,16 @@ class ChamadaModel {
                 LEFT JOIN usuarios t ON c.tecnico_id = t.id
             `;
         if (cliente) {
-            sql += ` WHERE c.cliente_id = ? ORDER BY c.criado_em DESC`;
+            sql += ` WHERE c.cliente_id = ? ORDER BY c.aberto_em DESC`;
             return await query(sql, [id]);
         } else {
-            sql += ` ORDER BY c.status ASC, c.criado_em DESC`; // Organiza por status para o técnico
+            sql += ` ORDER BY c.status ASC, c.aberto_em DESC`; // Organiza por status para o técnico
             return await query(sql, []);
         }
     }
 
     static async viewTecnico() {
-        const sql = `SELECT * FROM view_painel_tecnico ORDER BY prioridade_valor DESC`;
+        const sql = `SELECT * FROM view_painel_tecnico`;
         return await query(sql, []);
     }
 
@@ -59,7 +59,7 @@ class ChamadaModel {
 
     static async update(id, { descricao, tecnico_id, prioridade, status }) {
         const sql = `UPDATE chamados SET descricao = ?, tecnico_id = ?, prioridade = ?, status = ? WHERE id = ?`;
-        const result = await query(sql, [id, descricao, tecnico_id, prioridade, status]);
+        const result = await query(sql, [ descricao, tecnico_id, prioridade, status, id]);
         return result.affectedRows > 0;
     }
 

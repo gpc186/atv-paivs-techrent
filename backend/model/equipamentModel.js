@@ -35,7 +35,7 @@ class EquipamentoModel {
     }
 
     static async update(id, {nome, categoria, status, descricao}){
-        const sql = `UPDATE FROM equipamentos SET nome = ?, categoria = ?, status = ?, descricao = ? WHERE id = ?`;
+        const sql = `UPDATE equipamentos SET nome = ?, categoria = ?, status = ?, descricao = ? WHERE id = ?`;
         const result = await query(sql, [nome, categoria, status, descricao, id]);
         return result.affectedRows > 0;
     }

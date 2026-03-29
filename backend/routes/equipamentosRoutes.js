@@ -9,7 +9,7 @@ const router = express.Router();
 const { autenticar, autorizar } = require('../middlewares/auth');
 const EquipamentoController = require('../controllers/equipamentosController');
 
-router.get('/', autenticar, EquipamentoController.list);
+router.get('/', autenticar, EquipamentoController.listFunctioning);
 router.get('/:id', autenticar, EquipamentoController.findById);
 
 router.post('/', autenticar, autorizar('admin'), EquipamentoController.create);
