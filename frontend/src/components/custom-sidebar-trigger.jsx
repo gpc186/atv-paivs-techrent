@@ -13,9 +13,9 @@ export function CustomSidebarTrigger() {
 				<SidebarTrigger />
 			</TooltipTrigger>
             <TooltipContent className="px-2 py-1" side="right">
-				Toggle Sidebar{" "}
+				Alternar menu{" "}
 				<KbdGroup>
-					<Kbd>⌘</Kbd>
+					<Kbd>Ctrl</Kbd>
 					<Kbd>b</Kbd>
 				</KbdGroup>
 			</TooltipContent>

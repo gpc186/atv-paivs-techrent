@@ -1,110 +1,231 @@
-import { LayoutGridIcon, BarChart3Icon, ShoppingCartIcon, FileTextIcon, UsersIcon, MegaphoneIcon, SettingsIcon, HelpCircleIcon, ActivityIcon } from "lucide-react";
+import {
+  ActivityIcon,
+  ClipboardListIcon,
+  FolderKanbanIcon,
+  LayoutGridIcon,
+  MonitorCogIcon,
+  ShieldCheckIcon,
+  TicketPlusIcon,
+  WrenchIcon,
+} from "lucide-react";
+import { getHomeByRole } from "@/lib/route-guard";
 
-export const navGroups = [
-	{
-		label: "Overview",
-		items: [
-			{
-				title: "Dashboard",
-				path: "#/dashboard",
-				icon: (
-					<LayoutGridIcon />
-				),
-				isActive: true,
-			},
-			{
-				title: "Sales",
-				path: "#/sales",
-				icon: (
-					<BarChart3Icon />
-				),
-			},
-		],
-	},
-	{
-		label: "Store",
-		items: [
-			{
-				title: "Orders",
-				path: "#/orders",
-				icon: (
-					<ShoppingCartIcon />
-				),
-				subItems: [
-					{ title: "All orders", path: "#/orders/all" },
-					{ title: "Unfulfilled", path: "#/orders/unfulfilled" },
-					{ title: "Returns", path: "#/orders/returns" },
-				],
-			},
-			{
-				title: "Products",
-				path: "#/products",
-				icon: (
-					<FileTextIcon />
-				),
-				subItems: [
-					{ title: "Catalog", path: "#/products/catalog" },
-					{ title: "Inventory", path: "#/products/inventory" },
-					{ title: "Collections", path: "#/products/collections" },
-				],
-			},
-			{
-				title: "Customers",
-				path: "#/customers",
-				icon: (
-					<UsersIcon />
-				),
-			},
-			{
-				title: "Marketing",
-				path: "#/marketing",
-				icon: (
-					<MegaphoneIcon />
-				),
-			},
-		],
-	},
-	{
-		label: "Settings",
-		items: [
-			{
-				title: "Store settings",
-				path: "#/store-settings",
-				icon: (
-					<SettingsIcon />
-				),
-				subItems: [
-					{ title: "Store profile", path: "#/store-settings/profile" },
-					{ title: "Shipping & delivery", path: "#/store-settings/shipping" },
-					{ title: "Payments", path: "#/store-settings/payments" },
-					{ title: "Staff", path: "#/store-settings/staff" },
-					{ title: "Apps", path: "#/store-settings/apps" },
-				],
-			},
-		],
-	},
+const ROLE_META = {
+  admin: {
+    label: "Administrador",
+    description: "Gestao geral da operacao e dos equipamentos.",
+    primaryAction: {
+      href: "/admin/equipamentos",
+      label: "Ver equipamentos",
+      icon: <MonitorCogIcon />,
+    },
+  },
+  tecnico: {
+    label: "Tecnico",
+    description: "Acompanhe a fila tecnica e registre manutencoes.",
+    primaryAction: {
+      href: "/tecnico/manutencao/nova",
+      label: "Registrar manutencao",
+      icon: <WrenchIcon />,
+    },
+  },
+  cliente: {
+    label: "Cliente",
+    description: "Abra chamados e acompanhe seus atendimentos.",
+    primaryAction: {
+      href: "/cliente/chamados/novo",
+      label: "Novo chamado",
+      icon: <TicketPlusIcon />,
+    },
+  },
+};
+
+const NAVIGATION = {
+  admin: [
+    {
+      label: "Visao Geral",
+      items: [
+        {
+          title: "Dashboard",
+          path: "/admin/dashboard",
+          icon: <LayoutGridIcon />,
+          matchStartsWith: true,
+        },
+      ],
+    },
+    {
+      label: "Operacao",
+      items: [
+        {
+          title: "Equipamentos",
+          path: "/admin/equipamentos",
+          icon: <MonitorCogIcon />,
+          matchStartsWith: true,
+        },
+        {
+          title: "Chamados do cliente",
+          path: "/cliente/chamados",
+          icon: <ClipboardListIcon />,
+          matchStartsWith: true,
+        },
+      ],
+    },
+  ],
+  tecnico: [
+    {
+      label: "Visao Geral",
+      items: [
+        {
+          title: "Dashboard",
+          path: "/tecnico/dashboard",
+          icon: <LayoutGridIcon />,
+          matchStartsWith: true,
+        },
+        {
+          title: "Fila tecnica",
+          path: "/tecnico/fila",
+          icon: <FolderKanbanIcon />,
+          matchStartsWith: true,
+        },
+      ],
+    },
+    {
+      label: "Atendimento",
+      items: [
+        {
+          title: "Manutencoes",
+          path: "/tecnico/manutencao",
+          icon: <WrenchIcon />,
+          matchStartsWith: true,
+          subItems: [
+            {
+              title: "Historico",
+              path: "/tecnico/manutencao",
+              matchStartsWith: false,
+            },
+            {
+              title: "Registrar manutencao",
+              path: "/tecnico/manutencao/nova",
+              matchStartsWith: true,
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  cliente: [
+    {
+      label: "Visao Geral",
+      items: [
+        {
+          title: "Dashboard",
+          path: "/cliente/dashboard",
+          icon: <LayoutGridIcon />,
+          matchStartsWith: true,
+        },
+      ],
+    },
+    {
+      label: "Chamados",
+      items: [
+        {
+          title: "Meus chamados",
+          path: "/cliente/chamados",
+          icon: <ClipboardListIcon />,
+          matchStartsWith: true,
+          subItems: [
+            {
+              title: "Lista",
+              path: "/cliente/chamados",
+              matchStartsWith: false,
+            },
+            {
+              title: "Novo chamado",
+              path: "/cliente/chamados/novo",
+              icon: <TicketPlusIcon />,
+              matchStartsWith: true,
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
+const FOOTER_LINKS = [
+  {
+    title: "Acesso negado",
+    path: "/unauthorized",
+    icon: <ShieldCheckIcon />,
+    matchStartsWith: true,
+  },
+  {
+    title: "Inicio",
+    path: "/",
+    icon: <ActivityIcon />,
+    matchStartsWith: false,
+  },
 ];
 
-export const footerNavLinks = [
-	{
-		title: "Seller help",
-		path: "#/seller-help",
-		icon: (
-			<HelpCircleIcon />
-		),
-	},
-	{
-		title: "Platform status",
-		path: "#/status",
-		icon: (
-			<ActivityIcon />
-		),
-	},
-];
+function isActivePath(pathname, path, matchStartsWith = true) {
+  if (!pathname || !path) return false;
+  if (pathname === path) return true;
+  return matchStartsWith && pathname.startsWith(`${path}/`);
+}
 
-export const navLinks = [
-	...navGroups.flatMap((group) =>
-		group.items.flatMap((item) =>
-			item.subItems?.length ? [item, ...item.subItems] : [item])),
-	...footerNavLinks,
-];
+function withActiveState(item, pathname) {
+  const subItems = item.subItems?.map((subItem) => ({
+    ...subItem,
+    isActive: isActivePath(pathname, subItem.path, subItem.matchStartsWith),
+  }));
+
+  return {
+    ...item,
+    subItems,
+    isActive:
+      isActivePath(pathname, item.path, item.matchStartsWith) ||
+      subItems?.some((subItem) => subItem.isActive) ||
+      false,
+  };
+}
+
+export function getRoleMeta(role = "cliente") {
+  return ROLE_META[role] || ROLE_META.cliente;
+}
+
+export function getPrimaryAction(role = "cliente") {
+  return getRoleMeta(role).primaryAction;
+}
+
+export function getNavGroups(role = "cliente", pathname = "") {
+  return (NAVIGATION[role] || NAVIGATION.cliente).map((group) => ({
+    ...group,
+    items: group.items.map((item) => withActiveState(item, pathname)),
+  }));
+}
+
+export function getFooterNavLinks(pathname = "") {
+  return FOOTER_LINKS.map((item) => ({
+    ...item,
+    isActive: isActivePath(pathname, item.path, item.matchStartsWith),
+  }));
+}
+
+export function getPageInfo(pathname = "", role = "cliente") {
+  const allItems = [
+    ...getNavGroups(role, pathname).flatMap((group) =>
+      group.items.flatMap((item) => (item.subItems?.length ? [item, ...item.subItems] : [item]))
+    ),
+    ...getFooterNavLinks(pathname),
+  ];
+
+  const activeItem = allItems.find((item) => item.isActive);
+  const roleMeta = getRoleMeta(role);
+
+  return {
+    section: activeItem?.path === getHomeByRole(role) ? roleMeta.label : activeItem?.title || roleMeta.label,
+    title: activeItem?.title || "Painel",
+    icon: activeItem?.icon || <LayoutGridIcon />,
+    description: roleMeta.description,
+  };
+}

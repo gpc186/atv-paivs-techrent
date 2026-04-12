@@ -1,55 +1,38 @@
 "use client";
 
+import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { XIcon } from "lucide-react";
-
-const latestChange = {
-    badge: "UPDATE",
-    title: "Smarter shipping quotes",
-
-    // TIP: Use a single line of text for the description. (max 5 words)
-    description: "Real-time rates at checkout now.",
-
-    readMore: { href: "#", label: "Changelog" }
-};
+import { getSessionUser } from "@/lib/auth-storage";
+import { getPageInfo, getPrimaryAction, getRoleMeta } from "@/components/app-shared";
+import { usePathname } from "next/navigation";
 
 export function LatestChange() {
-	const [isOpen, setIsOpen] = useState(true);
-
-	if (!isOpen) {
-		return null;
-	}
+  const pathname = usePathname();
+  const user = getSessionUser();
+  const role = user?.nivel_acesso || "cliente";
+  const roleMeta = getRoleMeta(role);
+  const page = getPageInfo(pathname, role);
+  const primaryAction = getPrimaryAction(role);
 
 	return (
         <div
             className={cn(
-                "rounded-lg group/latest-change size-full min-h-27 justify-center border bg-background",
-                "relative flex size-full flex-col gap-1 overflow-hidden px-4 pt-3 pb-1 *:text-nowrap",
-                "transition-opacity group-data-[collapsible=icon]:pointer-events-none group-data-[collapsible=icon]:opacity-0"
+                "min-h-27 relative flex size-full flex-col gap-1 overflow-hidden rounded-lg border bg-background px-4 pt-3 pb-3",
+                "group/latest-change justify-center transition-opacity group-data-[collapsible=icon]:pointer-events-none group-data-[collapsible=icon]:opacity-0"
             )}>
-            <span className="font-light font-mono text-[10px] text-muted-foreground">
-				{latestChange.badge}
+            <span className="font-mono text-[10px] font-light text-muted-foreground">
+				{roleMeta.label.toUpperCase()}
 			</span>
-            <p className="font-medium text-xs">{latestChange.title}</p>
+            <p className="text-xs font-medium">{page.title}</p>
             <span className="text-[10px] text-muted-foreground">
-				{latestChange.description}
+				{roleMeta.description}
 			</span>
-            <Button
-                asChild
-                className="w-max px-0 font-light text-xs"
-                size="sm"
-                variant="link">
-				<a href={latestChange.readMore.href}>{latestChange.readMore.label}</a>
-			</Button>
-            <Button
-                className="absolute top-2 right-2 z-10 size-6 rounded-full opacity-0 transition-opacity group-hover/latest-change:opacity-100"
-                onClick={() => setIsOpen(false)}
-                size="icon-sm"
-                variant="ghost">
-				<XIcon className="size-3.5 text-muted-foreground" />{" "}
-			</Button>
+            <Link
+              className="mt-2 w-max text-xs font-light text-primary hover:underline"
+              href={primaryAction.href}
+            >
+              {primaryAction.label}
+            </Link>
         </div>
     );
 }
