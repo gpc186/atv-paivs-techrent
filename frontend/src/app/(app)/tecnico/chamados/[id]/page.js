@@ -45,9 +45,6 @@ export default function TecnicoChamadoDetalhePage() {
   }
 
   return (
-    <PageSection title={`Atendimento do chamado #${params.id}`} description="Atualize o andamento do chamado.">
-      {chamado ? (
-        <div className="mb-4 grid gap-1 text-sm text-foreground">
     <PageSection title={`Atendimento do chamado #${params?.id}`} description="Atualize o andamento do chamado.">
       {chamado ? (
         <div className="mb-4 grid gap-1 text-sm">
