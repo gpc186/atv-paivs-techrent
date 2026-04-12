@@ -27,9 +27,20 @@ const app = express();
 // Permite que o Express leia o corpo das requisições em JSON
 app.use(express.json());
 
-// TODO (opcional): adicionar cors se o frontend rodar em outra porta
-// const cors = require('cors');
-// app.use(cors());
+// CORS para permitir requisições do frontend (ex.: Next em localhost:3000)
+app.use((req, res, next) => {
+  const allowedOrigin = process.env.CORS_ORIGIN || 'http://localhost:3000';
+
+  res.header('Access-Control-Allow-Origin', allowedOrigin);
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
 
 // ---- Registro das rotas ----
 // Cada prefixo aponta para um arquivo de rotas separado
