@@ -24,7 +24,7 @@ export default function AdminEquipamentosPage() {
 
       <div className="grid gap-3">
         {equipamentos.map((item) => (
-          <div key={item.id} className="rounded-md border border-border bg-card p-3 text-sm text-foreground">
+          <div key={item.id} className="rounded-md border border-border bg-card p-3 text-sm text-foreground shadow-sm">
             <p><strong>Nome:</strong> {item.nome}</p>
             <p><strong>Categoria:</strong> {item.categoria}</p>
             <p><strong>Patrimônio:</strong> {item.patrimonio}</p>

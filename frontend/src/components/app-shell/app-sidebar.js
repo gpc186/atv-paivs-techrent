@@ -27,8 +27,8 @@ export default function AppSidebar({ role = "cliente" }) {
   const menuItems = MENU_BY_ROLE[role] || [];
 
   return (
-    <aside className="w-full border-b border-border bg-card px-4 py-3 md:min-h-screen md:w-64 md:border-b-0 md:border-r">
-      <p className="mb-4 text-lg font-semibold text-foreground">TechRent</p>
+    <aside className="w-full border-b border-border bg-primary px-4 py-3 text-primary-foreground md:min-h-screen md:w-64 md:border-b-0 md:border-r">
+      <p className="mb-4 text-lg font-semibold">TechRent</p>
       <nav className="grid gap-2">
         {menuItems.map((item) => {
           const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -36,8 +36,10 @@ export default function AppSidebar({ role = "cliente" }) {
             <Link
               key={item.href}
               href={item.href}
-              className={`rounded-md px-3 py-2 text-sm transition ${
-                active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"
+              className={`rounded-md px-3 py-2 text-sm font-medium transition ${
+                active
+                  ? "bg-card text-primary shadow-sm"
+                  : "text-primary-foreground/90 hover:bg-primary-foreground/15 hover:text-primary-foreground"
               }`}
             >
               {item.label}

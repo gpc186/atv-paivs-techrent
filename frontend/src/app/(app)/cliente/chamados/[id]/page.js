@@ -20,6 +20,11 @@ export default function ChamadoDetalhePage() {
   }, [params.id]);
 
   return (
+    <PageSection title={`Chamado #${params.id}`} description="Detalhes do chamado selecionado.">
+      {loading ? <p className="text-sm text-muted-foreground">Carregando...</p> : null}
+      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      {!loading && !error && chamado ? (
+        <div className="grid gap-2 text-sm text-foreground">
     <PageSection title={`Chamado #${params?.id}`} description="Detalhes do chamado selecionado.">
       {loading ? <p className="text-sm text-zinc-500">Carregando...</p> : null}
       {error ? <p className="text-sm text-red-600">{error}</p> : null}

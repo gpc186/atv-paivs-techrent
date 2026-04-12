@@ -22,7 +22,7 @@ export default function AdminDashboardPage() {
 
       {data ? (
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-md border border-border bg-card p-3 text-foreground">
+          <div className="rounded-md border border-border border-l-4 border-l-primary bg-card p-3 text-foreground shadow-sm">
             <h3 className="mb-2 font-medium">Chamados por status</h3>
             <ul className="text-sm text-muted-foreground">
               {(data.estatisticas_chamados || []).map((item) => (
@@ -30,7 +30,7 @@ export default function AdminDashboardPage() {
               ))}
             </ul>
           </div>
-          <div className="rounded-md border border-border bg-card p-3 text-foreground">
+          <div className="rounded-md border border-border border-l-4 border-l-accent bg-card p-3 text-foreground shadow-sm">
             <h3 className="mb-2 font-medium">Equipamentos por status</h3>
             <ul className="text-sm text-muted-foreground">
               {(data.estatisticas_equipamentos || []).map((item) => (
