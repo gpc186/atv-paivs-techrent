@@ -6,10 +6,10 @@ export default function ClienteDashboardPage() {
     <div className="grid gap-4">
       <PageSection title="Dashboard do cliente" description="Acompanhe rapidamente seus chamados.">
         <div className="flex flex-wrap gap-3">
-          <Link href="/cliente/chamados" className="rounded-md border border-zinc-300 px-3 py-2 text-sm hover:bg-zinc-100">
+          <Link href="/cliente/chamados" className="rounded-md border border-border px-3 py-2 text-sm hover:bg-muted">
             Ver chamados
           </Link>
-          <Link href="/cliente/chamados/novo" className="rounded-md bg-zinc-900 px-3 py-2 text-sm text-white hover:bg-zinc-700">
+          <Link href="/cliente/chamados/novo" className="rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground hover:bg-primary/90">
             Abrir novo chamado
           </Link>
         </div>

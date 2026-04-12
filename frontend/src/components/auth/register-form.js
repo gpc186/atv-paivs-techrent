@@ -44,10 +44,10 @@ export default function RegisterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-4 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
+    <form onSubmit={handleSubmit} className="grid gap-4 rounded-xl border border-border bg-card p-6 text-foreground shadow-sm">
       <div>
-        <h1 className="text-xl font-semibold text-zinc-900">Criar conta</h1>
-        <p className="text-sm text-zinc-500">Cadastre um usuário no sistema TechRent.</p>
+        <h1 className="text-xl font-semibold text-foreground">Criar conta</h1>
+        <p className="text-sm text-muted-foreground">Cadastre um usuário no sistema TechRent.</p>
       </div>
 
       <label className="grid gap-1 text-sm">
@@ -56,7 +56,7 @@ export default function RegisterForm() {
           value={form.nome}
           onChange={(event) => updateField("nome", event.target.value)}
           required
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border bg-card px-3 py-2 text-foreground placeholder:text-muted-foreground"
           placeholder="Nome completo"
         />
       </label>
@@ -68,7 +68,7 @@ export default function RegisterForm() {
           value={form.email}
           onChange={(event) => updateField("email", event.target.value)}
           required
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border bg-card px-3 py-2 text-foreground placeholder:text-muted-foreground"
         />
       </label>
 
@@ -79,7 +79,7 @@ export default function RegisterForm() {
           value={form.senhaSemHash}
           onChange={(event) => updateField("senhaSemHash", event.target.value)}
           required
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border bg-card px-3 py-2 text-foreground placeholder:text-muted-foreground"
         />
       </label>
 
@@ -88,7 +88,7 @@ export default function RegisterForm() {
         <select
           value={form.nivel_acesso}
           onChange={(event) => updateField("nivel_acesso", event.target.value)}
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border bg-card px-3 py-2 text-foreground placeholder:text-muted-foreground"
         >
           {ACCESS_LEVEL_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>
@@ -104,7 +104,7 @@ export default function RegisterForm() {
       <button
         type="submit"
         disabled={loading}
-        className="rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-60"
+        className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
       >
         {loading ? "Cadastrando..." : "Cadastrar"}
       </button>

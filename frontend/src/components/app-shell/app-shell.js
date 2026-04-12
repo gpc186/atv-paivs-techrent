@@ -8,7 +8,7 @@ export default function AppShell({ children }) {
   const user = getSessionUser();
 
   return (
-    <div className="min-h-screen bg-zinc-50 md:flex">
+    <div className="min-h-screen bg-muted/30 md:flex">
       <AppSidebar role={user?.nivel_acesso} />
       <div className="flex min-h-screen flex-1 flex-col">
         <AppHeader user={user} />

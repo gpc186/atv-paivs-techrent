@@ -19,12 +19,12 @@ export default function ManutencaoListPage() {
 
   return (
     <PageSection title="Histórico de manutenções" description="Registros de ações técnicas realizadas.">
-      {loading ? <p className="text-sm text-zinc-500">Carregando...</p> : null}
+      {loading ? <p className="text-sm text-muted-foreground">Carregando...</p> : null}
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
       <div className="grid gap-3">
         {manutencoes.map((item) => (
-          <div key={item.id} className="rounded-md border border-zinc-200 bg-zinc-50 p-3 text-sm">
+          <div key={item.id} className="rounded-md border border-border bg-card p-3 text-sm text-foreground">
             <p><strong>Equipamento:</strong> {item.equipamento_nome}</p>
             <p><strong>Técnico:</strong> {item.tecnico_nome || item.nome_tecnico}</p>
             <p><strong>Descrição:</strong> {item.descricao}</p>

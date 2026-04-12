@@ -40,21 +40,21 @@ export default function NovaManutencaoPage() {
     <PageSection title="Registrar manutenção" description="Conclua o atendimento e atualize o equipamento.">
       <form onSubmit={handleSubmit} className="grid gap-3">
         <input
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border px-3 py-2"
           placeholder="ID do chamado"
           value={form.chamado_id}
           onChange={(event) => update("chamado_id", event.target.value)}
           required
         />
         <input
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border px-3 py-2"
           placeholder="ID do equipamento"
           value={form.equipamento_id}
           onChange={(event) => update("equipamento_id", event.target.value)}
           required
         />
         <textarea
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border px-3 py-2"
           rows={4}
           placeholder="Descreva o reparo"
           value={form.descricao}
@@ -62,7 +62,7 @@ export default function NovaManutencaoPage() {
           required
         />
         <select
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border px-3 py-2"
           value={form.status_equipamento}
           onChange={(event) => update("status_equipamento", event.target.value)}
         >
@@ -74,7 +74,7 @@ export default function NovaManutencaoPage() {
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
         {feedback ? <p className="text-sm text-emerald-700">{feedback}</p> : null}
 
-        <button type="submit" className="rounded-md bg-zinc-900 px-3 py-2 text-sm text-white hover:bg-zinc-700">
+        <button type="submit" className="rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground hover:bg-primary/90">
           Salvar manutenção
         </button>
       </form>

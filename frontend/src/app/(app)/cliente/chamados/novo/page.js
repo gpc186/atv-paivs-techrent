@@ -47,7 +47,7 @@ export default function NovoChamadoPage() {
     <PageSection title="Abrir novo chamado" description="Informe o problema e selecione o equipamento.">
       <form onSubmit={handleSubmit} className="grid gap-3">
         <input
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border px-3 py-2"
           placeholder="Título"
           value={form.titulo}
           onChange={(event) => update("titulo", event.target.value)}
@@ -55,7 +55,7 @@ export default function NovoChamadoPage() {
         />
 
         <textarea
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border px-3 py-2"
           placeholder="Descrição"
           rows={4}
           value={form.descricao}
@@ -64,7 +64,7 @@ export default function NovoChamadoPage() {
         />
 
         <select
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border px-3 py-2"
           value={form.equipamento_id}
           onChange={(event) => update("equipamento_id", event.target.value)}
           required
@@ -79,7 +79,7 @@ export default function NovoChamadoPage() {
         </select>
 
         <select
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border px-3 py-2"
           value={form.prioridade}
           onChange={(event) => update("prioridade", event.target.value)}
         >
@@ -91,7 +91,7 @@ export default function NovoChamadoPage() {
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
         {feedback ? <p className="text-sm text-emerald-700">{feedback}</p> : null}
 
-        <button className="rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700" type="submit">
+        <button className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90" type="submit">
           Abrir chamado
         </button>
       </form>

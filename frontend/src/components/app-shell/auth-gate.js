@@ -34,7 +34,7 @@ export default function AuthGate({ children }) {
     (auth && !hasAccess(pathname, user?.nivel_acesso));
 
   if (shouldHide) {
-    return <div className="p-6 text-sm text-zinc-500">Carregando...</div>;
+    return <div className="p-6 text-sm text-muted-foreground">Carregando...</div>;
   }
 
   return children;

@@ -45,6 +45,9 @@ export default function TecnicoChamadoDetalhePage() {
   }
 
   return (
+    <PageSection title={`Atendimento do chamado #${params.id}`} description="Atualize o andamento do chamado.">
+      {chamado ? (
+        <div className="mb-4 grid gap-1 text-sm text-foreground">
     <PageSection title={`Atendimento do chamado #${params?.id}`} description="Atualize o andamento do chamado.">
       {chamado ? (
         <div className="mb-4 grid gap-1 text-sm">
@@ -59,7 +62,7 @@ export default function TecnicoChamadoDetalhePage() {
         <select
           value={status}
           onChange={(event) => setStatus(event.target.value)}
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border px-3 py-2"
         >
           <option value="em_atendimento">Em atendimento</option>
           <option value="resolvido">Resolvido</option>
@@ -69,7 +72,7 @@ export default function TecnicoChamadoDetalhePage() {
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
         {feedback ? <p className="text-sm text-emerald-700">{feedback}</p> : null}
 
-        <button type="submit" className="rounded-md bg-zinc-900 px-3 py-2 text-sm text-white hover:bg-zinc-700">
+        <button type="submit" className="rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground hover:bg-primary/90">
           Atualizar status
         </button>
       </form>

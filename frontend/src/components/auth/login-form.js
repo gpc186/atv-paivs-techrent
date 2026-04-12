@@ -30,10 +30,10 @@ export default function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-4 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
+    <form onSubmit={handleSubmit} className="grid gap-4 rounded-xl border border-border bg-card p-6 text-foreground shadow-sm">
       <div>
-        <h1 className="text-xl font-semibold text-zinc-900">Entrar no TechRent</h1>
-        <p className="text-sm text-zinc-500">Use seu e-mail e senha cadastrados.</p>
+        <h1 className="text-xl font-semibold text-foreground">Entrar no TechRent</h1>
+        <p className="text-sm text-muted-foreground">Use seu e-mail e senha cadastrados.</p>
       </div>
 
       <label className="grid gap-1 text-sm">
@@ -43,7 +43,7 @@ export default function LoginForm() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           required
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border bg-card px-3 py-2 text-foreground placeholder:text-muted-foreground"
           placeholder="voce@empresa.com"
         />
       </label>
@@ -55,7 +55,7 @@ export default function LoginForm() {
           value={senha}
           onChange={(event) => setSenha(event.target.value)}
           required
-          className="rounded-md border border-zinc-300 px-3 py-2"
+          className="rounded-md border border-border bg-card px-3 py-2 text-foreground placeholder:text-muted-foreground"
           placeholder="••••••••"
         />
       </label>
@@ -65,7 +65,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="rounded-md bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-60"
+        className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
       >
         {loading ? "Entrando..." : "Entrar"}
       </button>
