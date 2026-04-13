@@ -6,13 +6,13 @@ export function AppShell({
     children
 }) {
 	return (
-        <SidebarProvider>
+        <SidebarProvider suppressHydrationWarning>
             <AppSidebar />
-            <SidebarInset className="p-4 md:p-6">
+            <SidebarInset className="flex flex-col">
 				<AppHeader />
-				<div className="flex flex-1 flex-col gap-4 overflow-y-auto">
+				<main className="flex-1 overflow-y-auto p-4 md:p-6">
 					{children}
-				</div>
+				</main>
 			</SidebarInset>
         </SidebarProvider>
     );

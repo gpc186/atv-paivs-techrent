@@ -53,7 +53,30 @@ class ChamadaModel {
     }
 
     static async viewChamadas() {
-        const sql = `SELECT * FROM view_resumo_chamados`;
+        const sql = `SELECT status, COUNT(*) AS total FROM chamados WHERE status IS NOT NULL GROUP BY status ORDER BY status`;
+        return await query(sql, []);
+    }
+
+    static async getKpiMetrics() {
+        const sql = `
+            SELECT
+                COUNT(CASE WHEN status IN ('aberto', 'em_atendimento') THEN 1 END) as chamados_abertos,
+                COUNT(CASE WHEN status = 'em_atendimento' THEN 1 END) as em_progresso,
+                ROUND(
+                    (COUNT(CASE WHEN status = 'resolvido' AND DATE(aberto_em) >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) THEN 1 END) /
+                    COUNT(CASE WHEN DATE(aberto_em) >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) THEN 1 END)) * 100,
+                    1
+                ) as taxa_resolucao_30d
+            FROM chamados
+            WHERE DATE(aberto_em) >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+                OR status IN ('aberto', 'em_atendimento')
+        `;
+        const result = await query(sql, []);
+        return result[0] || { chamados_abertos: 0, em_progresso: 0, taxa_resolucao_30d: 0 };
+    }
+
+    static async getAtividadesRecentes() {
+        const sql = `SELECT * FROM view_atividades_recentes LIMIT 6`;
         return await query(sql, []);
     }
 

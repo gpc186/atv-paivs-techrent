@@ -70,3 +70,36 @@ SELECT
     COUNT(*) AS total
 FROM equipamentos
 GROUP BY status;
+
+
+-- =============================================
+-- VIEW 4: ATIVIDADES RECENTES (DASHBOARD)
+-- =============================================
+-- Últimas 6 atividades combinando chamados + manutenções
+-- Usada no dashboard do admin para timeline
+CREATE VIEW view_atividades_recentes AS
+SELECT
+    c.id as item_id,
+    c.atualizado_em as timestamp,
+    'chamado' as tipo,
+    c.status as subtipo,
+    CONCAT('Chamado #', c.id, ' - ', c.titulo) as descricao,
+    COALESCE(u_responsavel.nome, u_cliente.nome) as usuario_nome,
+    'ticket' as icon_type
+FROM chamados c
+JOIN usuarios u_cliente ON c.cliente_id = u_cliente.id
+LEFT JOIN usuarios u_responsavel ON c.tecnico_id = u_responsavel.id
+UNION ALL
+SELECT
+    m.id as item_id,
+    m.registrado_em as timestamp,
+    'manutencao' as tipo,
+    'manutencao' as subtipo,
+    CONCAT('Manutenção - ', e.nome) as descricao,
+    u_tecnico.nome as usuario_nome,
+    'wrench' as icon_type
+FROM historico_manutencao m
+JOIN equipamentos e ON m.equipamento_id = e.id
+JOIN usuarios u_tecnico ON m.tecnico_id = u_tecnico.id
+ORDER BY timestamp DESC
+LIMIT 6;

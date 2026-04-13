@@ -42,7 +42,7 @@ export function NavUser() {
           </Avatar>
         </button>
 			</DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-60 animate-in fade-in-0 zoom-in-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 duration-200">
+            <DropdownMenuContent align="end" className="w-60 animate-in fade-in-0 zoom-in-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 duration-200 bg-card border border-border/50 shadow-lg">
 				<div className="px-2 py-1.5">
           <div className="flex items-center gap-3">
             <Avatar className="size-10">

@@ -30,8 +30,14 @@ class EquipamentoModel {
     }
 
     static async viewEquipament(){
-        const sql = `SELECT * FROM view_resumo_equipamentos`
+        const sql = `SELECT status, COUNT(*) AS total FROM equipamentos WHERE status IS NOT NULL GROUP BY status ORDER BY status`
         return await query(sql, []);
+    }
+
+    static async getEquipamentosCriticos(){
+        const sql = `SELECT COUNT(*) as total FROM equipamentos WHERE status = 'em_manutencao'`;
+        const result = await query(sql, []);
+        return result[0]?.total || 0;
     }
 
     static async update(id, {nome, categoria, status, descricao}){

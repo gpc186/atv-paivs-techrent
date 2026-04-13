@@ -2,7 +2,6 @@
 // CONTROLLER DE DASHBOARD
 // =============================================
 // Usa as VIEWS do banco para retornar dados agregados.
-// TODO (alunos): implementar cada função abaixo.
 
 const ChamadaModel = require("../model/chamadaModel");
 const EquipamentoModel = require("../model/equipamentModel");
@@ -10,12 +9,33 @@ const EquipamentoModel = require("../model/equipamentModel");
 class DashboardController {
   static async viewAdmin(req, res) {
     try {
-      const [chamados, equipamentos] = await Promise.all([
+      const [
+        chamados,
+        equipamentos,
+        kpis,
+        equipamentosCriticos,
+        atividades
+      ] = await Promise.all([
         ChamadaModel.viewChamadas(),
-        EquipamentoModel.viewEquipament()
+        EquipamentoModel.viewEquipament(),
+        ChamadaModel.getKpiMetrics(),
+        EquipamentoModel.getEquipamentosCriticos(),
+        ChamadaModel.getAtividadesRecentes()
       ]);
 
-      return res.status(200).json({ ok: true, estatisticas_chamados: chamados, estatisticas_equipamentos: equipamentos, gerado_em: new Date() });
+      return res.status(200).json({
+        ok: true,
+        kpis: {
+          chamados_abertos: kpis.chamados_abertos || 0,
+          em_progresso: kpis.em_progresso || 0,
+          taxa_resolucao: kpis.taxa_resolucao_30d || 0,
+          equipamentos_criticos: equipamentosCriticos
+        },
+        estatisticas_chamados: chamados,
+        estatisticas_equipamentos: equipamentos,
+        atividades_recentes: atividades,
+        gerado_em: new Date()
+      });
     } catch (erro) {
       console.error("Erro ao gerar dashboard admin:", erro);
       return res.status(500).json({ erro: "Erro ao carregar dados do painel administrativo." });
@@ -24,7 +44,7 @@ class DashboardController {
 
   static async viewTecnico(req, res) {
     try {
-      
+
       const painel = await ChamadaModel.viewTecnico();
 
       return res.status(200).json({ ok: true, painel});

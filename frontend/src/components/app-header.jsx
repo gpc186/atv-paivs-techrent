@@ -19,7 +19,7 @@ export function AppHeader() {
 
 	return (
         <header
-            className={cn("mb-6 flex items-center justify-between gap-2 px-4 md:px-2")}>
+            className={cn("py-3 px-4 md:px-6 flex items-center justify-between gap-2 border-b border-border/50")}>
             <div className="flex items-center gap-3">
 				<CustomSidebarTrigger />
 				<Separator
