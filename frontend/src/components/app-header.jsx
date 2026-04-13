@@ -15,6 +15,7 @@ export function AppHeader() {
   const pathname = usePathname();
   const user = getSessionUser();
   const page = getPageInfo(pathname, user?.nivel_acesso);
+  const notificationCount = 0;
 
 	return (
         <header
@@ -27,9 +28,16 @@ export function AppHeader() {
 				<AppBreadcrumbs page={page} />
 			</div>
             <div className="flex items-center gap-3">
-				<Button aria-label="Notifications" size="icon" variant="ghost">
-					<BellIcon />
-				</Button>
+				<div className="relative">
+					<Button aria-label="Notifications" size="icon" variant="ghost" className="transition-all duration-200 hover:bg-primary/10">
+						<BellIcon />
+					</Button>
+					{notificationCount > 0 && (
+						<span className="notification-badge">
+							{notificationCount}
+						</span>
+					)}
+				</div>
 				<Separator
                     className="h-4 data-[orientation=vertical]:self-center"
                     orientation="vertical" />

@@ -37,7 +37,7 @@ export function NavGroup({
 							{item.subItems?.length ? (
 								<>
 									<CollapsibleTrigger asChild>
-										<SidebarMenuButton isActive={item.isActive}>
+										<SidebarMenuButton isActive={item.isActive} className={`transition-all duration-200 ${item.isActive ? 'bg-primary/10 border-l-4 border-l-primary' : 'hover:bg-muted'}`}>
 											{item.icon}
 											<span>{item.title}</span>
 											<ChevronRightIcon
@@ -48,7 +48,7 @@ export function NavGroup({
 										<SidebarMenuSub>
 											{item.subItems?.map((subItem) => (
 												<SidebarMenuSubItem key={subItem.title}>
-													<SidebarMenuSubButton asChild isActive={subItem.isActive}>
+													<SidebarMenuSubButton asChild isActive={subItem.isActive} className={`transition-all duration-200 ${subItem.isActive ? 'bg-primary/5 border-l-2 border-l-primary' : 'hover:bg-muted/50'}`}>
 														<Link href={subItem.path}>
 															{subItem.icon}
 															<span>{subItem.title}</span>
@@ -60,7 +60,7 @@ export function NavGroup({
 									</CollapsibleContent>
 								</>
 							) : (
-								<SidebarMenuButton asChild isActive={item.isActive}>
+								<SidebarMenuButton asChild isActive={item.isActive} className={`transition-all duration-200 ${item.isActive ? 'bg-primary/10 border-l-4 border-l-primary' : 'hover:bg-muted'}`}>
 									<Link href={item.path}>
 										{item.icon}
 										<span>{item.title}</span>

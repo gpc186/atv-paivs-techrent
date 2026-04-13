@@ -236,6 +236,37 @@ textarea::placeholder {
   --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
 }
 
+/* Floating Input Styles */
+.floating-input {
+  @apply relative;
+}
+
+.floating-input input {
+  @apply w-full rounded-md border border-border bg-card px-3 py-2 text-foreground placeholder:text-transparent transition-all duration-200;
+}
+
+.floating-input input:focus {
+  @apply border-primary ring-2 ring-primary/50;
+}
+
+.floating-input label {
+  @apply absolute left-0 top-2 px-3 text-sm text-muted-foreground transition-all duration-200 pointer-events-none;
+}
+
+.floating-input input:placeholder-shown:not(:focus) ~ label {
+  @apply top-2 text-sm;
+}
+
+.floating-input input:not(:placeholder-shown) ~ label,
+.floating-input input:focus ~ label {
+  @apply -top-2 text-xs bg-background px-1;
+}
+
+/* Notification Badge */
+.notification-badge {
+  @apply absolute -top-1 -right-1 flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-destructive text-destructive-foreground text-xs font-bold animate-pulse;
+}
+
 @layer base {
   body {
     letter-spacing: var(--tracking-normal);

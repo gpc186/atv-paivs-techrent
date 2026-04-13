@@ -44,51 +44,57 @@ export default function RegisterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-4 rounded-xl border border-border bg-card p-6 text-foreground shadow-sm">
+    <form onSubmit={handleSubmit} className="grid gap-6 rounded-xl border border-border/50 bg-gradient-to-br from-card to-card/95 p-6 text-foreground shadow-md transition-all duration-300 hover:shadow-lg">
       <div>
-        <h1 className="text-xl font-semibold text-foreground">Criar conta</h1>
+        <h1 className="text-2xl font-semibold text-foreground">Criar conta</h1>
         <p className="text-sm text-muted-foreground">Cadastre um usuário no sistema TechRent.</p>
       </div>
 
-      <label className="grid gap-1 text-sm">
-        Nome
+      <div className="floating-input">
         <input
+          type="text"
+          id="nome"
           value={form.nome}
           onChange={(event) => updateField("nome", event.target.value)}
           required
-          className="rounded-md border border-border bg-card px-3 py-2 text-foreground placeholder:text-muted-foreground"
-          placeholder="Nome completo"
+          placeholder=" "
         />
-      </label>
+        <label htmlFor="nome">Nome completo</label>
+      </div>
 
-      <label className="grid gap-1 text-sm">
-        E-mail
+      <div className="floating-input">
         <input
           type="email"
+          id="email-registro"
           value={form.email}
           onChange={(event) => updateField("email", event.target.value)}
           required
-          className="rounded-md border border-border bg-card px-3 py-2 text-foreground placeholder:text-muted-foreground"
+          placeholder=" "
         />
-      </label>
+        <label htmlFor="email-registro">E-mail</label>
+      </div>
 
-      <label className="grid gap-1 text-sm">
-        Senha
+      <div className="floating-input">
         <input
           type="password"
+          id="senha"
           value={form.senhaSemHash}
           onChange={(event) => updateField("senhaSemHash", event.target.value)}
           required
-          className="rounded-md border border-border bg-card px-3 py-2 text-foreground placeholder:text-muted-foreground"
+          placeholder=" "
         />
-      </label>
+        <label htmlFor="senha">Senha</label>
+      </div>
 
-      <label className="grid gap-1 text-sm">
-        Perfil
+      <div className="grid gap-1">
+        <label htmlFor="perfil" className="text-sm text-muted-foreground">
+          Perfil
+        </label>
         <select
+          id="perfil"
           value={form.nivel_acesso}
           onChange={(event) => updateField("nivel_acesso", event.target.value)}
-          className="rounded-md border border-border bg-card px-3 py-2 text-foreground placeholder:text-muted-foreground"
+          className="rounded-md border border-border bg-card px-3 py-2 text-foreground transition-all duration-200 hover:border-primary focus:border-primary focus:ring-2 focus:ring-primary/50"
         >
           {ACCESS_LEVEL_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>
@@ -96,15 +102,15 @@ export default function RegisterForm() {
             </option>
           ))}
         </select>
-      </label>
+      </div>
 
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
-      {feedback ? <p className="text-sm text-emerald-700">{feedback}</p> : null}
+      {error ? <p className="text-sm text-red-600 animate-in fade-in-0 duration-300">{error}</p> : null}
+      {feedback ? <p className="text-sm text-emerald-600 animate-in fade-in-0 duration-300">{feedback}</p> : null}
 
       <button
         type="submit"
         disabled={loading}
-        className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
+        className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-all duration-200 hover:bg-primary/90 hover:shadow-md disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-primary/50"
       >
         {loading ? "Cadastrando..." : "Cadastrar"}
       </button>
