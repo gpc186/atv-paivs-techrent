@@ -37,7 +37,17 @@ class EquipamentoController {
       return res.status(200).json({ ok: true, equipamentos });
     } catch (erro) {
       console.error("Erro ao listar operacionais:", erro);
-      return res.status(500).json({ erro: "Erro ao buscar equipamentos operacionais1" });
+      return res.status(500).json({ erro: "Erro ao buscar equipamentos operacionais!" });
+    }
+  }
+
+  static async listAll(req, res) {
+    try {
+      const equipamentos = await EquipamentoModel.findAll();
+      return res.status(200).json({ ok: true, equipamentos });
+    } catch (erro) {
+      console.error("Erro ao listar todos equipamentos:", erro);
+      return res.status(500).json({ erro: "Erro ao buscar equipamentos!" });
     }
   }
 

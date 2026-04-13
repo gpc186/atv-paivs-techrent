@@ -56,7 +56,7 @@ class ChamadaController {
         return res.status(400).json({ erro: "Título, descrição e equipamento são obrigatórios." });
       }
 
-      const novoChamado = await ChamadaModel.create({ titulo, descricao, cliente_id, equipamento_id, tecnico_id: null, prioridade: prioridade || "media", status: "pendente" });
+      const novoChamado = await ChamadaModel.create({ titulo, descricao, cliente_id, equipamento_id, tecnico_id: null, prioridade: prioridade || "media", status: "aberto" });
 
       await EquipamentoModel.updateStatus({id: equipamento_id, status: 'em_manutencao'});
 
