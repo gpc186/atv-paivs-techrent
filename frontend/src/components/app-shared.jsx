@@ -2,6 +2,7 @@ import {
   ActivityIcon,
   ClipboardListIcon,
   FolderKanbanIcon,
+  HomeIcon,
   LayoutGridIcon,
   MonitorCogIcon,
   ShieldCheckIcon,
@@ -154,17 +155,11 @@ const NAVIGATION = {
 
 const FOOTER_LINKS = [
   {
-    title: "Acesso negado",
-    path: "/unauthorized",
-    icon: <ShieldCheckIcon />,
-    matchStartsWith: true,
-  },
-  {
     title: "Inicio",
     path: "/",
-    icon: <ActivityIcon />,
+    icon: <HomeIcon/>,
     matchStartsWith: false,
-  },
+  }
 ];
 
 function isActivePath(pathname, path, matchStartsWith = true) {

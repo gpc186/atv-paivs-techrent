@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/sidebar";
 import { NavGroup } from "@/components/nav-group";
 import { getFooterNavLinks, getNavGroups, getPrimaryAction } from "@/components/app-shared";
-import { LatestChange } from "@/components/latest-change";
 import { HomeIcon } from "lucide-react";
 
 export function AppSidebar() {
@@ -72,7 +71,6 @@ export function AppSidebar() {
 				))}
 			</SidebarContent>
             <SidebarFooter>
-				<LatestChange />
 				<SidebarMenu className="mt-2">
 					{footerNavLinks.map((item) => (
 						<SidebarMenuItem key={item.title}>
