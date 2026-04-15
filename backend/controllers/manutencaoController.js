@@ -34,6 +34,22 @@ class ManutencaoController {
         return res.status(400).json({ erro: "Chamado, equipamento e descrição são obrigatórios." });
       }
 
+      // Validar se o chamado existe e está em atendimento
+      const chamado = await ChamadaModel.findById(chamado_id);
+      if (!chamado) {
+        return res.status(404).json({ erro: "Chamado não encontrado." });
+      }
+
+      if (chamado.status !== 'em_atendimento' && chamado.status !== 'aberto') {
+        return res.status(400).json({ erro: "Apenas chamados abertos ou em atendimento podem ter manutenção registrada." });
+      }
+
+      // Validar se o equipamento existe
+      const equipamento = await EquipamentoModel.findById(equipamento_id);
+      if (!equipamento) {
+        return res.status(404).json({ erro: "Equipamento não encontrado." });
+      }
+
       const tecnico_id = req.usuario.id;
 
       const novaManutencaoId = await ManutencaoModel.create({ chamado_id, equipamento_id, tecnico_id, descricao });

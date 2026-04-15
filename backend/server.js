@@ -12,6 +12,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const cors = require('cors');
 
 // ---- Importação das rotas ----
 const authRoutes         = require('./routes/authRoutes');
@@ -26,6 +27,11 @@ const app = express();
 
 // Permite que o Express leia o corpo das requisições em JSON
 app.use(express.json());
+
+app.use(cors({
+  origin: 'http://localhost:3000', // substitua pela porta do seu front-end
+  credentials: true
+}));
 
 // CORS para permitir requisições do frontend (ex.: Next em localhost:3000)
 app.use((req, res, next) => {
@@ -59,6 +65,17 @@ app.get('/', (req, res) => {
 // ---- Inicialização do servidor ----
 const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
+const server = app.listen(PORT, () => {
+  console.log(`✅ Servidor rodando em http://localhost:${PORT}`);
+});
+
+// Error handlers
+server.on('error', (err) => {
+  console.error('❌ Erro no servidor:', err.message);
+  process.exit(1);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('❌ Exceção não capturada:', err.message);
+  process.exit(1);
 });

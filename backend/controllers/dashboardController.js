@@ -47,10 +47,23 @@ class DashboardController {
 
       const painel = await ChamadaModel.viewTecnico();
 
-      return res.status(200).json({ ok: true, painel});
+      return res.status(200).json({ ok: true, painel, gerado_em: new Date() });
     } catch (erro) {
       console.error("Erro ao carregar painel técnico:", erro);
       return res.status(500).json({ erro: "Erro ao carregar a fila de chamados!" });
+    }
+  }
+
+  static async viewCliente(req, res) {
+    try {
+      const cliente_id = req.usuario.id;
+
+      const chamados = await ChamadaModel.findByAccessLevel({ id: cliente_id, cliente: true });
+
+      return res.status(200).json({ ok: true, chamados, gerado_em: new Date() });
+    } catch (erro) {
+      console.error("Erro ao carregar painel cliente:", erro);
+      return res.status(500).json({ erro: "Erro ao carregar seus chamados!" });
     }
   }
 }
