@@ -11,7 +11,7 @@ export default function ManutencaoListPage() {
 
   useEffect(() => {
     manutencaoService
-      .list()
+      .listar()
       .then((data) => setManutencoes(data?.manutencoes || data || []))
       .catch((err) => setError(err.message || "Erro ao carregar manutenções"))
       .finally(() => setLoading(false));

@@ -19,7 +19,7 @@ export default function NovoChamadoPage() {
 
   useEffect(() => {
     equipamentosService
-      .list()
+      .listarTodos()
       .then((data) => setEquipamentos(data?.equipamentos || []))
       .catch((err) => setError(err.message || "Erro ao carregar equipamentos"))
       .finally(() => setLoadingEquip(false));

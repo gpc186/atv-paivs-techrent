@@ -11,7 +11,7 @@ export default function AdminEquipamentosPage() {
 
   useEffect(() => {
     equipamentosService
-      .list()
+      .listarTodos()
       .then((data) => setEquipamentos(data?.equipamentos || []))
       .catch((err) => setError(err.message || "Erro ao listar equipamentos"))
       .finally(() => setLoading(false));
