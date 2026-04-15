@@ -14,6 +14,7 @@ import {
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 import { ChevronRightIcon } from "lucide-react";
 
 export function NavGroup({
@@ -22,7 +23,7 @@ export function NavGroup({
 }) {
 	return (
         <SidebarGroup>
-            {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
+            {label && <SidebarGroupLabel className="px-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-sidebar-foreground/55">{label}</SidebarGroupLabel>}
             <SidebarMenu>
 				{items.map((item) => (
 					<Collapsible
@@ -37,18 +38,33 @@ export function NavGroup({
 							{item.subItems?.length ? (
 								<>
 									<CollapsibleTrigger asChild>
-										<SidebarMenuButton isActive={item.isActive} className={`transition-all duration-200 ${item.isActive ? 'bg-primary/10 border-l-4 border-l-primary' : 'hover:bg-muted'}`}>
+										<SidebarMenuButton
+                                            isActive={item.isActive}
+                                            className={cn(
+                                                "rounded-2xl px-3 py-2.5 transition-all duration-300 ease-out hover:-translate-y-0.5",
+                                                item.isActive
+                                                  ? "bg-gradient-to-r from-primary/12 to-accent/10 text-foreground shadow-sm ring-1 ring-primary/10"
+                                                  : "hover:bg-sidebar-accent/70 hover:shadow-sm"
+                                            )}>
 											{item.icon}
 											<span>{item.title}</span>
 											<ChevronRightIcon
-                                                className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                                                className="ml-auto transition-transform duration-300 group-data-[state=open]/collapsible:rotate-90" />
 										</SidebarMenuButton>
 									</CollapsibleTrigger>
 									<CollapsibleContent>
-										<SidebarMenuSub>
+										<SidebarMenuSub className="ml-5 mt-1 border-l-sidebar-border/70">
 											{item.subItems?.map((subItem) => (
 												<SidebarMenuSubItem key={subItem.title}>
-													<SidebarMenuSubButton asChild isActive={subItem.isActive} className={`transition-all duration-200 ${subItem.isActive ? 'bg-primary/5 border-l-2 border-l-primary' : 'hover:bg-muted/50'}`}>
+													<SidebarMenuSubButton
+                                                        asChild
+                                                        isActive={subItem.isActive}
+                                                        className={cn(
+                                                            "rounded-xl transition-all duration-300",
+                                                            subItem.isActive
+                                                              ? "bg-primary/8 text-foreground shadow-sm"
+                                                              : "hover:bg-sidebar-accent/60"
+                                                        )}>
 														<Link href={subItem.path}>
 															{subItem.icon}
 															<span>{subItem.title}</span>
@@ -60,7 +76,15 @@ export function NavGroup({
 									</CollapsibleContent>
 								</>
 							) : (
-								<SidebarMenuButton asChild isActive={item.isActive} className={`transition-all duration-200 ${item.isActive ? 'bg-primary/10 border-l-4 border-l-primary' : 'hover:bg-muted'}`}>
+								<SidebarMenuButton
+                                    asChild
+                                    isActive={item.isActive}
+                                    className={cn(
+                                        "rounded-2xl px-3 py-2.5 transition-all duration-300 ease-out hover:-translate-y-0.5",
+                                        item.isActive
+                                          ? "bg-gradient-to-r from-primary/12 to-accent/10 text-foreground shadow-sm ring-1 ring-primary/10"
+                                          : "hover:bg-sidebar-accent/70 hover:shadow-sm"
+                                    )}>
 									<Link href={item.path}>
 										{item.icon}
 										<span>{item.title}</span>

@@ -12,37 +12,36 @@ export function SimplePieChart({ data, colors = ["hsl(221, 83%, 53%)", "hsl(190,
     color: colors[i % colors.length]
   }));
 
-  // Criar SVG pie chart simples
-  let currentAngle = 0;
-  const svgSegments = segments.map((segment) => {
-    const sliceAngle = (segment.percentage / 100) * 360;
-    const startAngle = currentAngle;
-    const endAngle = currentAngle + sliceAngle;
+  const svgSegments = segments.reduce(
+    (acc, segment) => {
+      const sliceAngle = (segment.percentage / 100) * 360;
+      const startAngle = acc.currentAngle;
+      const endAngle = startAngle + sliceAngle;
 
-    // Converter para radianos e calcular coordenadas
-    const startRad = (startAngle * Math.PI) / 180;
-    const endRad = (endAngle * Math.PI) / 180;
+      const startRad = (startAngle * Math.PI) / 180;
+      const endRad = (endAngle * Math.PI) / 180;
 
-    const x1 = 50 + 40 * Math.cos(startRad);
-    const y1 = 50 + 40 * Math.sin(startRad);
-    const x2 = 50 + 40 * Math.cos(endRad);
-    const y2 = 50 + 40 * Math.sin(endRad);
+      const x1 = 50 + 40 * Math.cos(startRad);
+      const y1 = 50 + 40 * Math.sin(startRad);
+      const x2 = 50 + 40 * Math.cos(endRad);
+      const y2 = 50 + 40 * Math.sin(endRad);
 
-    const largeArc = sliceAngle > 180 ? 1 : 0;
+      const largeArc = sliceAngle > 180 ? 1 : 0;
+      const pathData = [
+        `M 50 50`,
+        `L ${x1} ${y1}`,
+        `A 40 40 0 ${largeArc} 1 ${x2} ${y2}`,
+        "Z",
+      ].join(" ");
 
-    const pathData = [
-      `M 50 50`,
-      `L ${x1} ${y1}`,
-      `A 40 40 0 ${largeArc} 1 ${x2} ${y2}`,
-      `Z`
-    ].join(" ");
-
-    currentAngle = endAngle;
-
-    return (
-      <path key={segment.status} d={pathData} fill={segment.color} opacity="0.8" />
-    );
-  });
+      acc.paths.push(
+        <path key={segment.status} d={pathData} fill={segment.color} opacity="0.8" />
+      );
+      acc.currentAngle = endAngle;
+      return acc;
+    },
+    { currentAngle: 0, paths: [] }
+  ).paths;
 
   return (
     <div className="flex flex-col gap-4">

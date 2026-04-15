@@ -81,8 +81,14 @@ class ChamadaController {
         return res.status(404).json({ erro: "Chamado não encontrado!" });
       }
 
-      if(tecnico_id){
-        await ChamadaModel.setTecnico({id, tecnico_id});
+      const tecnicoResponsavel =
+        tecnico_id ||
+        (status === 'em_atendimento' && ['tecnico', 'admin'].includes(req.usuario?.nivel_acesso)
+          ? req.usuario.id
+          : null);
+
+      if (tecnicoResponsavel) {
+        await ChamadaModel.setTecnico({ id, tecnico_id: tecnicoResponsavel });
       }
 
       await ChamadaModel.updateStatus({ id, status });

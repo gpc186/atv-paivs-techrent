@@ -1,14 +1,34 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+
 export function StatCard({ icon: Icon, title, value, trend, color = "primary", onClick }) {
+  const tone = {
+    primary: {
+      card: "hover:border-primary/30",
+      icon: "text-primary/30",
+    },
+    accent: {
+      card: "hover:border-accent/30",
+      icon: "text-accent/30",
+    },
+    destructive: {
+      card: "hover:border-destructive/30",
+      icon: "text-destructive/30",
+    },
+  }[color] || {
+    card: "hover:border-primary/30",
+    icon: "text-primary/30",
+  };
+
   return (
     <div
       onClick={onClick}
-      className={`
-        rounded-lg border border-border/50 bg-gradient-to-br from-card to-card/95
-        p-4 transition-all duration-300 hover:border-${color}/30 hover:shadow-lg hover:scale-105
-        ${onClick ? "cursor-pointer" : ""}
-      `}
+      className={cn(
+        "rounded-lg border border-border/50 bg-gradient-to-br from-card to-card/95 p-4 transition-all duration-300 hover:shadow-lg hover:scale-[1.02]",
+        tone.card,
+        onClick && "cursor-pointer"
+      )}
     >
       <div className="flex items-start justify-between">
         <div className="flex-1">
@@ -23,7 +43,7 @@ export function StatCard({ icon: Icon, title, value, trend, color = "primary", o
           </div>
         </div>
         {Icon && (
-          <div className={`text-${color}/20 opacity-60`}>
+          <div className={cn("opacity-60", tone.icon)}>
             <Icon size={32} />
           </div>
         )}

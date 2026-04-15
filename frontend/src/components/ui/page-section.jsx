@@ -1,9 +1,20 @@
-export default function PageSection({ title, description, children }) {
+import { cn } from "@/lib/utils";
+
+export default function PageSection({ title, description, children, className }) {
   return (
-    <section className="rounded-2xl border border-border/80 bg-card/95 p-5 shadow-sm backdrop-blur-sm">
-      <h2 className="text-lg font-semibold text-card-foreground">{title}</h2>
-      {description ? <p className="mt-1 text-sm text-muted-foreground">{description}</p> : null}
-      <div className="mt-4">{children}</div>
+    <section className={cn("app-surface-panel page-enter", className)}>
+      {(title || description) ? (
+        <div className="mb-5 flex flex-col gap-2">
+          {title ? (
+            <h2 className="app-panel-title">{title}</h2>
+          ) : null}
+          {description ? (
+            <p className="app-panel-description">{description}</p>
+          ) : null}
+          <div className="mt-1 h-px w-full bg-gradient-to-r from-primary/20 via-slate-200 to-transparent" />
+        </div>
+      ) : null}
+      <div>{children}</div>
     </section>
   );
 }

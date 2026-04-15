@@ -48,7 +48,30 @@ class ChamadaModel {
     }
 
     static async viewTecnico() {
-        const sql = `SELECT * FROM view_painel_tecnico`;
+        const sql = `
+            SELECT
+                c.id AS chamado_id,
+                c.titulo,
+                c.descricao,
+                c.equipamento_id,
+                c.prioridade,
+                c.status,
+                u_cliente.nome AS solicitante,
+                e.nome AS equipamento,
+                e.categoria,
+                e.patrimonio,
+                u_tec.nome AS tecnico_responsavel,
+                c.aberto_em,
+                c.atualizado_em
+            FROM chamados c
+            JOIN usuarios u_cliente ON c.cliente_id = u_cliente.id
+            JOIN equipamentos e ON c.equipamento_id = e.id
+            LEFT JOIN usuarios u_tec ON c.tecnico_id = u_tec.id
+            WHERE c.status IN ('aberto', 'em_atendimento')
+            ORDER BY
+                FIELD(c.prioridade, 'alta', 'media', 'baixa'),
+                c.aberto_em ASC
+        `;
         return await query(sql, []);
     }
 

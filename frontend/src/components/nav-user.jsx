@@ -35,24 +35,24 @@ export function NavUser() {
 	return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-				<button className="rounded-full outline-hidden ring-sidebar-ring transition-all duration-200 focus-visible:ring-2 hover:opacity-80">
+				<button className="rounded-full border border-border/70 bg-card/70 p-1 shadow-sm outline-hidden ring-sidebar-ring transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md focus-visible:ring-2">
           <Avatar className="size-8">
             <AvatarImage src="" />
-            <AvatarFallback>{(user?.nome || "U").charAt(0).toUpperCase()}</AvatarFallback>
+            <AvatarFallback className="bg-slate-950 text-white">{(user?.nome || "U").charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
         </button>
 			</DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-60 animate-in fade-in-0 zoom-in-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 duration-200 bg-card border border-border/50 shadow-lg">
-				<div className="px-2 py-1.5">
+            <DropdownMenuContent align="end" className="w-64 rounded-[22px] border border-border/70 bg-card/90 p-2 shadow-2xl shadow-slate-950/10 backdrop-blur-xl">
+				<div className="rounded-2xl bg-muted/35 px-3 py-3">
           <div className="flex items-center gap-3">
             <Avatar className="size-10">
               <AvatarImage src="" />
-              <AvatarFallback>{(user?.nome || "U").charAt(0).toUpperCase()}</AvatarFallback>
+              <AvatarFallback className="bg-slate-950 text-white">{(user?.nome || "U").charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="min-w-0">
               <p className="truncate font-medium text-foreground">{user?.nome || "Usuario"}</p>
               <p className="truncate text-xs text-muted-foreground">{user?.email || "Sem email"}</p>
-              <p className="mt-0.5 text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">
+              <p className="mt-1 inline-flex rounded-full border border-border/60 bg-card px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
                 {roleMeta.label}
               </p>
             </div>
@@ -61,13 +61,13 @@ export function NavUser() {
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
           <DropdownMenuLabel>Atalhos</DropdownMenuLabel>
-					<DropdownMenuItem asChild className="transition-all duration-150 hover:bg-primary/10 cursor-pointer">
+					<DropdownMenuItem asChild className="cursor-pointer rounded-xl transition-all duration-200 hover:bg-primary/10">
             <Link href={getHomeByRole(role)}>
               <HomeIcon />
               Ir para meu painel
             </Link>
           </DropdownMenuItem>
-					<DropdownMenuItem asChild className="transition-all duration-150 hover:bg-primary/10 cursor-pointer">
+					<DropdownMenuItem asChild className="cursor-pointer rounded-xl transition-all duration-200 hover:bg-primary/10">
             <Link href="/unauthorized">
               <ShieldIcon />
               Ver pagina de acesso
@@ -76,7 +76,7 @@ export function NavUser() {
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					<DropdownMenuItem className="w-full cursor-pointer transition-all duration-150 hover:bg-destructive/10 text-destructive hover:text-destructive" onClick={handleLogout}>
+					<DropdownMenuItem className="w-full cursor-pointer rounded-xl text-destructive transition-all duration-200 hover:bg-destructive/10 hover:text-destructive" onClick={handleLogout}>
 						<LogOutIcon />
 						Sair
 					</DropdownMenuItem>

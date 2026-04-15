@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ArrowRightIcon, ClipboardListIcon, PlusIcon } from "lucide-react";
 import { dashboardService } from "@/services/dashboard.service";
 import PageSection from "@/components/ui/page-section";
+import { Button } from "@/components/ui/button";
+import { formatEnumLabel, getTicketStatusBadgeClass } from "@/lib/presentation";
 
 export default function ClienteDashboardPage() {
-  const router = useRouter();
   const [chamados, setChamados] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,7 +16,6 @@ export default function ClienteDashboardPage() {
   useEffect(() => {
     async function carregarDados() {
       try {
-        setLoading(true);
         const response = await dashboardService.cliente();
         setChamados(response.chamados || []);
       } catch (err) {
@@ -29,86 +29,76 @@ export default function ClienteDashboardPage() {
   }, []);
 
   const totalChamados = chamados.length;
-  const chamadosAbertos = chamados.filter((c) => c.status === "aberto").length;
-  const chamadosResolvidos = chamados.filter((c) => c.status === "resolvido").length;
+  const chamadosAbertos = chamados.filter((item) => item.status === "aberto").length;
+  const chamadosResolvidos = chamados.filter((item) => item.status === "resolvido").length;
 
   return (
     <div className="grid gap-6">
       <PageSection
-        title="Dashboard do Cliente"
-        description="Acompanhe rapidamente seus chamados de TI"
+        title="Dashboard do cliente"
+        description="Acompanhe seus chamados abertos, veja o andamento mais recente e abra novas solicitacoes com rapidez."
       >
         <div className="flex flex-wrap gap-3">
-          <Link
-            href="/cliente/chamados"
-            className="rounded-md border border-border px-4 py-2 text-sm hover:bg-muted"
-          >
-            Ver todos os chamados
-          </Link>
-          <Link
-            href="/cliente/chamados/novo"
-            className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground hover:bg-primary/90"
-          >
-            Abrir novo chamado
-          </Link>
+          <Button asChild size="lg">
+            <Link href="/cliente/chamados/novo">
+              <PlusIcon />
+              Abrir novo chamado
+            </Link>
+          </Button>
+          <Button asChild size="lg" variant="outline">
+            <Link href="/cliente/chamados">
+              <ClipboardListIcon />
+              Ver todos os chamados
+            </Link>
+          </Button>
         </div>
       </PageSection>
 
-      {/* Estatísticas */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-lg border border-border bg-card p-6">
-          <p className="text-sm text-muted-foreground">Total de Chamados</p>
-          <p className="text-3xl font-bold mt-2">{totalChamados}</p>
-        </div>
-        <div className="rounded-lg border border-border bg-card p-6">
-          <p className="text-sm text-muted-foreground">Abertos</p>
-          <p className="text-3xl font-bold mt-2 text-blue-600">{chamadosAbertos}</p>
-        </div>
-        <div className="rounded-lg border border-border bg-card p-6">
-          <p className="text-sm text-muted-foreground">Resolvidos</p>
-          <p className="text-3xl font-bold mt-2 text-green-600">
-            {chamadosResolvidos}
-          </p>
-        </div>
+      <div className="grid gap-4 md:grid-cols-3">
+        {[
+          { label: "Total de chamados", value: totalChamados, tone: "text-foreground" },
+          { label: "Abertos", value: chamadosAbertos, tone: "text-sky-600" },
+          { label: "Resolvidos", value: chamadosResolvidos, tone: "text-emerald-600" },
+        ].map((item) => (
+          <div key={item.label} className="app-stat-card">
+            <p className="text-sm text-slate-600">{item.label}</p>
+            <p className={`mt-3 text-4xl font-semibold ${item.tone}`}>{item.value}</p>
+          </div>
+        ))}
       </div>
 
-      {/* Últimos chamados */}
-      <PageSection title="Últimos Chamados">
+      <PageSection title="Ultimos chamados" description="Resumo rapido para saber o que ainda precisa de retorno.">
         {loading ? (
-          <p className="text-muted-foreground">Carregando...</p>
+          <p className="text-sm text-muted-foreground">Carregando chamados...</p>
         ) : error ? (
-          <p className="text-red-500">Erro: {error}</p>
+          <p className="text-sm text-destructive">Erro: {error}</p>
         ) : chamados.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">
-              Você não possui chamados no momento.
-            </p>
+          <div className="rounded-2xl border border-dashed border-border px-4 py-10 text-center text-sm text-muted-foreground">
+            Voce ainda nao possui chamados no momento.
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="grid gap-4">
             {chamados.slice(0, 5).map((chamado) => (
-              <div
+              <Link
                 key={chamado.id}
-                className="flex items-center justify-between rounded-lg border border-border p-4 hover:bg-muted/50"
+                href={`/cliente/chamados/${chamado.id}`}
+                className="app-surface-card"
               >
-                <div className="flex-1">
-                  <p className="font-semibold">{chamado.titulo}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {chamado.equipamento_nome}
-                  </p>
+                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                  <div className="min-w-0">
+                    <h3 className="text-lg font-semibold text-foreground">{chamado.titulo}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {chamado.equipamento_nome || "Equipamento nao informado"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className={getTicketStatusBadgeClass(chamado.status)}>
+                      {formatEnumLabel(chamado.status)}
+                    </span>
+                    <ArrowRightIcon className="size-4 text-muted-foreground" />
+                  </div>
                 </div>
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    chamado.status === "aberto"
-                      ? "bg-blue-100 text-blue-800"
-                      : chamado.status === "em_atendimento"
-                      ? "bg-orange-100 text-orange-800"
-                      : "bg-green-100 text-green-800"
-                  }`}
-                >
-                  {chamado.status}
-                </span>
-              </div>
+              </Link>
             ))}
           </div>
         )}

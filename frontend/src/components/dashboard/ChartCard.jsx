@@ -2,11 +2,14 @@
 
 export function ChartCard({ title, children, loading = false, error = null }) {
   return (
-    <div className="rounded-lg border border-border/50 bg-gradient-to-br from-card to-card/95 p-4">
-      <h3 className="mb-4 text-lg font-semibold text-foreground">{title}</h3>
+    <div className="surface-panel card-hover-lift rounded-[26px] p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h3 className="text-lg font-semibold tracking-tight text-foreground">{title}</h3>
+        <div className="hidden h-px flex-1 bg-gradient-to-r from-border via-primary/20 to-transparent md:block" />
+      </div>
 
       {error && (
-        <div className="text-sm text-red-600 dark:text-red-500 p-4 bg-red-50 dark:bg-red-950/20 rounded">
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-4 text-sm text-red-600 dark:text-red-500">
           {error}
         </div>
       )}

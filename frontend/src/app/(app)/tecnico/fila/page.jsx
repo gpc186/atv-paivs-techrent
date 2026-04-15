@@ -1,16 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ArrowRightIcon, FilterIcon, WrenchIcon } from "lucide-react";
 import PageSection from "@/components/ui/page-section";
-import { dashboardService } from "@/services/dashboard.service";
+import { Button } from "@/components/ui/button";
 import { chamadosService } from "@/services/chamados.service";
+import { dashboardService } from "@/services/dashboard.service";
+import {
+  formatEnumLabel,
+  getPriorityBadgeClass,
+  getTicketStatusBadgeClass,
+} from "@/lib/presentation";
+import { getSessionUser } from "@/lib/auth-storage";
+import { cn } from "@/lib/utils";
+
+const FILTERS = ["todos", "aberto", "em_atendimento"];
 
 export default function TecnicoFilaPage() {
+  const user = getSessionUser();
   const [painel, setPainel] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionId, setActionId] = useState(null);
   const [error, setError] = useState("");
-  const [filtro, setFiltro] = useState("todos"); // todos, aberto, em_atendimento
+  const [filtro, setFiltro] = useState("todos");
 
   useEffect(() => {
     carregarFila();
@@ -21,8 +34,9 @@ export default function TecnicoFilaPage() {
       setLoading(true);
       const data = await dashboardService.tecnico();
       setPainel(data?.painel || []);
+      setError("");
     } catch (err) {
-      setError(err.message || "Erro ao carregar fila técnica");
+      setError(err.message || "Erro ao carregar fila tecnica.");
     } finally {
       setLoading(false);
     }
@@ -30,12 +44,16 @@ export default function TecnicoFilaPage() {
 
   async function assumirChamado(chamadoId) {
     try {
+      setActionId(chamadoId);
       await chamadosService.updateStatus(chamadoId, {
         status: "em_atendimento",
+        tecnico_id: user?.id,
       });
-      carregarFila();
+      await carregarFila();
     } catch (err) {
-      setError("Erro ao assumir chamado: " + err.message);
+      setError(`Erro ao assumir chamado: ${err.message}`);
+    } finally {
+      setActionId(null);
     }
   }
 
@@ -44,123 +62,128 @@ export default function TecnicoFilaPage() {
     return item.status === filtro;
   });
 
-  const abertos = painel.filter((c) => c.status === "aberto").length;
-  const emAtendimento = painel.filter((c) => c.status === "em_atendimento").length;
+  const counters = {
+    todos: painel.length,
+    aberto: painel.filter((item) => item.status === "aberto").length,
+    em_atendimento: painel.filter((item) => item.status === "em_atendimento").length,
+  };
 
   return (
     <div className="grid gap-6">
-      <PageSection title="Fila Técnica" description="Gerenciar chamados atribuídos">
-        {/* Filtros */}
-        <div className="flex gap-2 mb-4">
-          <button
-            onClick={() => setFiltro("todos")}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-              filtro === "todos"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted hover:bg-muted/80"
-            }`}
-          >
-            Todos ({painel.length})
-          </button>
-          <button
-            onClick={() => setFiltro("aberto")}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-              filtro === "aberto"
-                ? "bg-blue-600 text-white"
-                : "bg-muted hover:bg-muted/80"
-            }`}
-          >
-            Abertos ({abertos})
-          </button>
-          <button
-            onClick={() => setFiltro("em_atendimento")}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-              filtro === "em_atendimento"
-                ? "bg-orange-600 text-white"
-                : "bg-muted hover:bg-muted/80"
-            }`}
-          >
-            Em Atendimento ({emAtendimento})
-          </button>
+      <PageSection
+        title="Fila tecnica"
+        description="Priorize chamados abertos, assuma atendimentos e siga direto para o registro de manutencao."
+      >
+        <div className="flex flex-wrap gap-2">
+          {FILTERS.map((item) => (
+            <button
+              key={item}
+              type="button"
+              onClick={() => setFiltro(item)}
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition",
+                filtro === item
+                  ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                  : "border-white/20 bg-white/82 text-slate-800 shadow-sm backdrop-blur hover:bg-white"
+              )}
+            >
+              <FilterIcon className="size-3.5" />
+              {formatEnumLabel(item)} ({counters[item]})
+            </button>
+          ))}
         </div>
       </PageSection>
 
       {loading ? (
-        <p className="text-center text-muted-foreground py-8">Carregando...</p>
+        <p className="app-surface-panel text-center text-sm text-slate-600">
+          Carregando fila tecnica...
+        </p>
       ) : error ? (
-        <p className="text-center text-red-600 py-8">{error}</p>
+        <p className="app-surface-panel border-destructive/20 bg-destructive/5 text-center text-sm text-destructive">
+          {error}
+        </p>
       ) : chamadosFiltrados.length === 0 ? (
-        <div className="text-center py-8 text-muted-foreground">
-          Nenhum chamado {filtro === "todos" ? "" : filtro}
+        <div className="app-surface-panel border-dashed border-slate-200 text-center text-sm text-slate-600">
+          Nenhum chamado encontrado para o filtro atual.
         </div>
       ) : (
         <div className="grid gap-4">
           {chamadosFiltrados.map((item) => (
-            <div
+            <article
               key={item.chamado_id}
-              className="rounded-lg border border-border bg-card p-4 shadow-sm hover:shadow-md transition"
+              className="app-surface-card"
             >
-              <div className="flex items-start justify-between gap-4">
-                <Link
-                  href={`/tecnico/chamados/${item.chamado_id}`}
-                  className="flex-1 hover:opacity-80 transition"
-                >
-                  <p className="font-semibold text-lg">{item.titulo}</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {item.descricao}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full ${
-                        item.prioridade === "alta"
-                          ? "bg-red-100 text-red-800"
-                          : item.prioridade === "media"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-green-100 text-green-800"
-                      }`}
-                    >
-                      {item.prioridade}
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className={getTicketStatusBadgeClass(item.status)}>
+                      {formatEnumLabel(item.status)}
                     </span>
-                    <span className="text-xs text-muted-foreground">
-                      Equipamento: {item.equipamento}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      Cliente: {item.solicitante}
+                    <span className={getPriorityBadgeClass(item.prioridade)}>
+                      Prioridade {formatEnumLabel(item.prioridade)}
                     </span>
                   </div>
-                </Link>
 
-                <div className="flex flex-col gap-2">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
-                      item.status === "aberto"
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-orange-100 text-orange-800"
-                    }`}
-                  >
-                    {item.status}
-                  </span>
+                  <h2 className="mt-4 text-xl font-semibold text-foreground">{item.titulo}</h2>
+                  <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+                    {item.descricao || "Sem descricao detalhada informada pelo solicitante."}
+                  </p>
 
-                  {item.status === "aberto" && (
-                    <button
-                      onClick={() => assumirChamado(item.chamado_id)}
-                      className="px-3 py-1 rounded-md text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 transition whitespace-nowrap"
-                    >
-                      Assumir
-                    </button>
-                  )}
+                  <div className="mt-4 grid gap-3 text-sm text-slate-600 md:grid-cols-3">
+                    <div className="surface-muted p-3">
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                        Solicitante
+                      </p>
+                      <p className="mt-1 font-medium text-slate-950">{item.solicitante}</p>
+                    </div>
+                    <div className="surface-muted p-3">
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                        Equipamento
+                      </p>
+                      <p className="mt-1 font-medium text-slate-950">{item.equipamento}</p>
+                      <p className="text-xs text-slate-500">{item.categoria || "Sem categoria"}</p>
+                    </div>
+                    <div className="surface-muted p-3">
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                        Responsavel
+                      </p>
+                      <p className="mt-1 font-medium text-slate-950">
+                        {item.tecnico_responsavel || "Nao atribuido"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-                  {item.status === "em_atendimento" && (
-                    <Link
-                      href={`/tecnico/manutencao/novo?chamadoId=${item.chamado_id}&equipamentoId=${item.equipamento_id}`}
-                      className="px-3 py-1 rounded-md text-xs font-semibold bg-orange-600 text-white hover:bg-orange-700 transition text-center"
-                    >
-                      Registrar Reparo
+                <div className="flex w-full flex-col gap-2 lg:w-56">
+                  <Button asChild variant="outline" size="lg">
+                    <Link href={`/tecnico/chamados/${item.chamado_id}`}>
+                      Ver detalhes
+                      <ArrowRightIcon />
                     </Link>
+                  </Button>
+
+                  {item.status === "aberto" ? (
+                    <Button
+                      type="button"
+                      size="lg"
+                      onClick={() => assumirChamado(item.chamado_id)}
+                      disabled={actionId === item.chamado_id}
+                    >
+                      <WrenchIcon />
+                      {actionId === item.chamado_id ? "Assumindo..." : "Assumir atendimento"}
+                    </Button>
+                  ) : (
+                    <Button asChild size="lg">
+                      <Link
+                        href={`/tecnico/manutencao/nova?chamadoId=${item.chamado_id}&equipamentoId=${item.equipamento_id}`}
+                      >
+                        Registrar reparo
+                      </Link>
+                    </Button>
                   )}
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       )}

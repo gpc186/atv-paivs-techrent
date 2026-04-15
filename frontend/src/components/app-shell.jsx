@@ -8,10 +8,12 @@ export function AppShell({
 	return (
         <SidebarProvider suppressHydrationWarning>
             <AppSidebar />
-            <SidebarInset className="flex flex-col">
+            <SidebarInset className="relative flex flex-col bg-transparent">
 				<AppHeader />
-				<main className="flex-1 overflow-y-auto p-4 md:p-6">
-					{children}
+				<main className="relative flex-1 overflow-y-auto p-4 md:p-6">
+                    <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6">
+					    {children}
+                    </div>
 				</main>
 			</SidebarInset>
         </SidebarProvider>

@@ -19,17 +19,25 @@ export function AppHeader() {
 
 	return (
         <header
-            className={cn("py-3 px-4 md:px-6 flex items-center justify-between gap-2 border-b border-border/50")}>
-            <div className="flex items-center gap-3">
-				<CustomSidebarTrigger />
+            className={cn("sticky top-0 z-20 border-b border-border/50 bg-background/72 px-3 py-3 backdrop-blur-xl md:px-4")}>
+            <div className="flex w-full items-center justify-between gap-4">
+            <div className="min-w-0 flex items-center gap-3">
+				<div className="rounded-2xl border border-border/70 bg-card/70 p-1 shadow-sm">
+                    <CustomSidebarTrigger />
+                </div>
 				<Separator
-                    className="mr-2 h-4 data-[orientation=vertical]:self-center"
+                    className="hidden h-10 data-[orientation=vertical]:self-center md:block"
                     orientation="vertical" />
-				<AppBreadcrumbs page={page} />
+                <div className="min-w-0">
+				    <AppBreadcrumbs page={page} />
+                    <p className="mt-1 hidden truncate text-sm text-muted-foreground md:block">
+                        {page.description}
+                    </p>
+                </div>
 			</div>
             <div className="flex items-center gap-3">
 				<div className="relative">
-					<Button aria-label="Notifications" size="icon" variant="ghost" className="transition-all duration-200 hover:bg-primary/10">
+					<Button aria-label="Notifications" size="icon" variant="ghost" className="rounded-2xl border border-border/70 bg-card/70 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary/10 hover:shadow-md">
 						<BellIcon />
 					</Button>
 					{notificationCount > 0 && (
@@ -39,10 +47,11 @@ export function AppHeader() {
 					)}
 				</div>
 				<Separator
-                    className="h-4 data-[orientation=vertical]:self-center"
+                    className="hidden h-10 data-[orientation=vertical]:self-center md:block"
                     orientation="vertical" />
 				<NavUser />
 			</div>
+            </div>
         </header>
     );
 }

@@ -1,14 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  AlertTriangleIcon,
+  ClipboardListIcon,
+  MonitorCogIcon,
+  TrendingUpIcon,
+} from "lucide-react";
 import PageSection from "@/components/ui/page-section";
 import { dashboardService } from "@/services/dashboard.service";
-import { StatCard } from "@/components/dashboard/StatCard";
-import { ChartCard } from "@/components/dashboard/ChartCard";
-import { SimplePieChart } from "@/components/dashboard/SimplePieChart";
-import { SimpleBarChart } from "@/components/dashboard/SimpleBarChart";
 import { ActivityTimeline } from "@/components/dashboard/ActivityTimeline";
-import { ClipboardListIcon, MonitorCogIcon, TrendingUpIcon, AlertTriangleIcon } from "lucide-react";
+import { ChartCard } from "@/components/dashboard/ChartCard";
+import { SimpleBarChart } from "@/components/dashboard/SimpleBarChart";
+import { SimplePieChart } from "@/components/dashboard/SimplePieChart";
+import { StatCard } from "@/components/dashboard/StatCard";
 
 export default function AdminDashboardPage() {
   const [data, setData] = useState(null);
@@ -16,7 +21,6 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
     dashboardService
       .admin()
       .then((response) => {
@@ -31,73 +35,77 @@ export default function AdminDashboardPage() {
   }, []);
 
   return (
-    <PageSection title="Dashboard administrativo" description="Visão consolidada de chamados, equipamentos e atividades recentes.">
-      {error && <p className="text-sm text-red-600 animate-in fade-in-0 duration-300 mb-4">{error}</p>}
+    <PageSection
+      title="Dashboard administrativo"
+      description="Visao consolidada da operacao para acompanhar volume de chamados, saude do inventario e atividade recente."
+    >
+      {error ? (
+        <div className="mb-5 rounded-2xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+          {error}
+        </div>
+      ) : null}
 
       {loading ? (
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="dashboard-grid">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-32 bg-muted rounded-lg animate-pulse" />
+              <div key={i} className="surface-muted h-36 animate-pulse" />
             ))}
           </div>
-          <div className="h-64 bg-muted rounded-lg animate-pulse" />
+          <div className="grid gap-4 xl:grid-cols-2">
+            <div className="surface-muted h-80 animate-pulse" />
+            <div className="surface-muted h-80 animate-pulse" />
+          </div>
         </div>
       ) : data ? (
-        <div className="space-y-6">
-          {/* KPI Cards - Top Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="dashboard-grid">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <StatCard
               icon={ClipboardListIcon}
-              title="Chamados Abertos"
+              title="Chamados abertos"
               value={data.kpis?.chamados_abertos || 0}
               color="primary"
             />
             <StatCard
               icon={TrendingUpIcon}
-              title="Em Progresso"
+              title="Em progresso"
               value={data.kpis?.em_progresso || 0}
               color="accent"
             />
             <StatCard
-              icon={TrendingUpIcon}
-              title="Taxa de Resolução"
+              icon={MonitorCogIcon}
+              title="Taxa de resolucao"
               value={`${data.kpis?.taxa_resolucao || 0}%`}
               color="primary"
             />
             <StatCard
               icon={AlertTriangleIcon}
-              title="Equipamentos Críticos"
+              title="Equipamentos criticos"
               value={data.kpis?.equipamentos_criticos || 0}
               color="destructive"
             />
           </div>
 
-          {/* Charts Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <ChartCard title="Chamados por Status" loading={!data.estatisticas_chamados}>
-              {data.estatisticas_chamados && data.estatisticas_chamados.filter(i => i.status).length > 0 ? (
-                <SimplePieChart data={data.estatisticas_chamados.filter(i => i.status)} />
+          <div className="grid gap-4 xl:grid-cols-2">
+            <ChartCard title="Chamados por status" loading={!data.estatisticas_chamados}>
+              {data.estatisticas_chamados?.filter((item) => item.status).length > 0 ? (
+                <SimplePieChart data={data.estatisticas_chamados.filter((item) => item.status)} />
               ) : (
-                <p className="text-sm text-muted-foreground text-center py-8">Nenhum dado disponível</p>
+                <p className="py-8 text-center text-sm text-muted-foreground">Nenhum dado disponivel</p>
               )}
             </ChartCard>
 
-            <ChartCard title="Equipamentos por Status" loading={!data.estatisticas_equipamentos}>
-              {data.estatisticas_equipamentos && data.estatisticas_equipamentos.filter(i => i.status).length > 0 ? (
-                <SimpleBarChart data={data.estatisticas_equipamentos.filter(i => i.status)} />
+            <ChartCard title="Equipamentos por status" loading={!data.estatisticas_equipamentos}>
+              {data.estatisticas_equipamentos?.filter((item) => item.status).length > 0 ? (
+                <SimpleBarChart data={data.estatisticas_equipamentos.filter((item) => item.status)} />
               ) : (
-                <p className="text-sm text-muted-foreground text-center py-8">Nenhum dado disponível</p>
+                <p className="py-8 text-center text-sm text-muted-foreground">Nenhum dado disponivel</p>
               )}
             </ChartCard>
           </div>
 
-          {/* Activities Timeline */}
-          <ChartCard title="Atividades Recentes" loading={!data.atividades_recentes}>
-            <ActivityTimeline
-              activities={data.atividades_recentes || []}
-              loading={false}
-            />
+          <ChartCard title="Atividades recentes" loading={!data.atividades_recentes}>
+            <ActivityTimeline activities={data.atividades_recentes || []} loading={false} />
           </ChartCard>
         </div>
       ) : null}

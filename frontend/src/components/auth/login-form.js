@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { ArrowRightIcon, LockKeyholeIcon, MailIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { authService } from "@/services/auth.service";
 import { setSession } from "@/lib/auth-storage";
 import { getHomeByRole } from "@/lib/route-guard";
+import { authService } from "@/services/auth.service";
+import { Button } from "@/components/ui/button";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -30,45 +32,66 @@ export default function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-6 rounded-xl border border-border/50 bg-gradient-to-br from-card to-card/95 p-6 text-foreground shadow-md transition-all duration-300 hover:shadow-lg">
+    <form
+      onSubmit={handleSubmit}
+      className="grid gap-6 rounded-[28px] border border-white/10 bg-white/85 p-6 text-foreground shadow-2xl shadow-slate-950/10 backdrop-blur md:p-8"
+    >
       <div>
-        <h1 className="text-2xl font-semibold text-foreground">Entrar no TechRent</h1>
-        <p className="text-sm text-muted-foreground">Use seu e-mail e senha cadastrados.</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.26em] text-primary">Acesso seguro</p>
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">Entrar no TechRent</h1>
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+          Acompanhe chamados, fila tecnica e disponibilidade de equipamentos em um unico painel.
+        </p>
       </div>
 
-      <div className="floating-input">
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
-          placeholder=" "
-        />
-        <label htmlFor="email">E-mail</label>
+      <div className="grid gap-4">
+        <div className="grid gap-2">
+          <label htmlFor="email" className="app-form-label">
+            E-mail
+          </label>
+          <div className="app-form-shell">
+            <MailIcon />
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+              className="bg-transparent"
+              placeholder="voce@empresa.com"
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-2">
+          <label htmlFor="password" className="app-form-label">
+            Senha
+          </label>
+          <div className="app-form-shell">
+            <LockKeyholeIcon />
+            <input
+              id="password"
+              type="password"
+              value={senha}
+              onChange={(event) => setSenha(event.target.value)}
+              required
+              className="bg-transparent"
+              placeholder="Digite sua senha"
+            />
+          </div>
+        </div>
       </div>
 
-      <div className="floating-input">
-        <input
-          type="password"
-          id="password"
-          value={senha}
-          onChange={(event) => setSenha(event.target.value)}
-          required
-          placeholder=" "
-        />
-        <label htmlFor="password">Senha</label>
-      </div>
+      {error ? (
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+          {error}
+        </div>
+      ) : null}
 
-      {error ? <p className="text-sm text-red-600 animate-in fade-in-0 duration-300">{error}</p> : null}
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-all duration-200 hover:bg-primary/90 hover:shadow-md disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-primary/50"
-      >
-        {loading ? "Entrando..." : "Entrar"}
-      </button>
+      <Button type="submit" size="lg" disabled={loading} className="w-full">
+        {loading ? "Entrando..." : "Entrar agora"}
+        <ArrowRightIcon />
+      </Button>
     </form>
   );
 }
