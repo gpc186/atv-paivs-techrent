@@ -23,6 +23,16 @@ async function request(path, options = {}) {
   const data = isJson ? await response.json() : null;
 
   if (!response.ok) {
+
+    if (response.status === 401) {
+      localStorage.clear("techrent_user");
+      localStorage.clear("techrent_user");
+      window.location.href = "/login";
+    }
+
+    if(response.status === 403){
+      window.location.href = "/unauthorized";
+    }
     const message = data?.error || data?.erro || data?.mensagem || "Erro na requisição";
     throw new Error(message);
   }
