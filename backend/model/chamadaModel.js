@@ -1,32 +1,36 @@
 const { query } = require('../config/database');
 
 class ChamadaModel {
-    static async create({ titulo, descricao, cliente_id, equipamento_id, tecnico_id, prioridade, status }) {
+    static async create({ titulo, descricao, cliente_id, equipamento_id, tecnico_id, prioridade, status }, executor = null) {
+        const run = executor ? executor.execute.bind(executor) : async (sql, params) => [await query(sql, params)];
         const sql = `INSERT INTO chamados (titulo, descricao, cliente_id, equipamento_id, tecnico_id, prioridade, status) VALUES (?,?,?,?,?,?,?)`;
-        const result = await query(sql, [titulo, descricao, cliente_id, equipamento_id, tecnico_id, prioridade, status]);
+        const [result] = await run(sql, [titulo, descricao, cliente_id, equipamento_id, tecnico_id, prioridade, status]);
         return result.insertId;
     };
 
-    static async findById(id) {
+    static async findById(id, executor = null) {
+        const run = executor ? executor.execute.bind(executor) : async (sql, params) => [await query(sql, params)];
         const sql = `SELECT c.*, e.nome AS equipamento_nome, u.nome AS cliente_nome, t.nome AS tecnico_nome
                 FROM chamados c
                 JOIN equipamentos e ON c.equipamento_id = e.id
                 JOIN usuarios u ON c.cliente_id = u.id
                 LEFT JOIN usuarios t ON c.tecnico_id = t.id
                 WHERE c.id = ?`;
-        const result = await query(sql, [id]);
+        const [result] = await run(sql, [id]);
         return result[0] || null;
     }
 
-    static async setTecnico({ id, tecnico_id }) {
+    static async setTecnico({ id, tecnico_id }, executor = null) {
+        const run = executor ? executor.execute.bind(executor) : async (sql, params) => [await query(sql, params)];
         const sql = `UPDATE chamados SET tecnico_id = ?, status = 'em_atendimento' WHERE id = ?`;
-        const result = await query(sql, [tecnico_id, id]);
+        const [result] = await run(sql, [tecnico_id, id]);
         return result.affectedRows > 0;
     }
 
-    static async updateStatus({ id, status }) {
+    static async updateStatus({ id, status }, executor = null) {
+        const run = executor ? executor.execute.bind(executor) : async (sql, params) => [await query(sql, params)];
         const sql = `UPDATE chamados SET status = ? WHERE id = ?`;
-        const result = await query(sql, [status, id]);
+        const [result] = await run(sql, [status, id]);
         return result.affectedRows > 0;
     }
 

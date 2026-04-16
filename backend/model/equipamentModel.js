@@ -1,15 +1,17 @@
 const { query } = require('../config/database');
 
 class EquipamentoModel {
-    static async create({nome, categoria, patrimonio, status, descricao}){
+    static async create({nome, categoria, patrimonio, status, descricao}, executor = null){
+        const run = executor ? executor.execute.bind(executor) : async (sql, params) => [await query(sql, params)];
         const sql = `INSERT INTO equipamentos (nome, categoria, patrimonio, status,descricao) values (?,?,?,?,?)`
-        const result = await query(sql, [nome, categoria, patrimonio, status, descricao]);
+        const [result] = await run(sql, [nome, categoria, patrimonio, status, descricao]);
         return result.insertId;
     }
 
-    static async findById(id){
+    static async findById(id, executor = null){
+        const run = executor ? executor.execute.bind(executor) : async (sql, params) => [await query(sql, params)];
         const sql = `SELECT * FROM equipamentos WHERE id = ?`;
-        const result = await query(sql, [id]);
+        const [result] = await run(sql, [id]);
         return result[0] || null;
     }
 
@@ -40,15 +42,17 @@ class EquipamentoModel {
         return result[0]?.total || 0;
     }
 
-    static async update(id, {nome, categoria, status, descricao}){
+    static async update(id, {nome, categoria, status, descricao}, executor = null){
+        const run = executor ? executor.execute.bind(executor) : async (sql, params) => [await query(sql, params)];
         const sql = `UPDATE equipamentos SET nome = ?, categoria = ?, status = ?, descricao = ? WHERE id = ?`;
-        const result = await query(sql, [nome, categoria, status, descricao, id]);
+        const [result] = await run(sql, [nome, categoria, status, descricao, id]);
         return result.affectedRows > 0;
     }
 
-    static async updateStatus({ id, status }){
+    static async updateStatus({ id, status }, executor = null){
+        const run = executor ? executor.execute.bind(executor) : async (sql, params) => [await query(sql, params)];
         const sql = `UPDATE equipamentos SET status = ? WHERE id = ?`;
-        const result = await query(sql, [status, id]);
+        const [result] = await run(sql, [status, id]);
         return result.affectedRows > 0;
     }
 

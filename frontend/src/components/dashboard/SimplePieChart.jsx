@@ -14,6 +14,25 @@ export function SimplePieChart({ data, colors = ["hsl(221, 83%, 53%)", "hsl(190,
 
   const svgSegments = segments.reduce(
     (acc, segment) => {
+      if (segment.percentage <= 0) {
+        return acc;
+      }
+
+      if (segment.percentage >= 100) {
+        acc.paths.push(
+          <circle
+            key={segment.status}
+            cx="50"
+            cy="50"
+            r="40"
+            fill={segment.color}
+            opacity="0.8"
+          />
+        );
+        acc.currentAngle = 360;
+        return acc;
+      }
+
       const sliceAngle = (segment.percentage / 100) * 360;
       const startAngle = acc.currentAngle;
       const endAngle = startAngle + sliceAngle;

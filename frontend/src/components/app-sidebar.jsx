@@ -34,11 +34,11 @@ export function AppSidebar() {
         <Sidebar collapsible="icon" variant="floating" className="page-enter">
             <SidebarHeader className="p-3">
 				<SidebarMenuButton asChild tooltip="Voltar para o painel" className="h-12 rounded-2xl bg-transparent shadow-none hover:bg-sidebar-accent/60 group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:shadow-none">
-					<Link href={roleHome}>
-						<div className="flex size-9 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-sm">
-                            <LogoIcon className="size-4" />
+					<Link href={roleHome} className="flex min-w-0 items-center gap-3 group-data-[collapsible=icon]:justify-center">
+						<div className="flex size-9 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-sm">
+                            <LogoIcon className="block size-4 shrink-0" />
                         </div>
-						<div className="flex min-w-0 flex-col">
+						<div className="flex min-w-0 flex-col group-data-[collapsible=icon]:hidden">
                             <span className="font-semibold tracking-tight">TechRent</span>
                             <span className="truncate text-xs text-muted-foreground">{roleMeta.label}</span>
                         </div>

@@ -66,6 +66,16 @@ export default function NovaManutencaoPage() {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
 
+  function updatePositiveNumberField(field, value) {
+    if (value === "") {
+      update(field, "");
+      return;
+    }
+
+    const numericValue = Number(value);
+    update(field, numericValue > 0 ? String(numericValue) : "");
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
     setError("");
@@ -150,9 +160,10 @@ export default function NovaManutencaoPage() {
                 <input
                   id="chamado_id"
                   type="number"
+                  min="1"
                   className="app-form-control"
                   value={form.chamado_id}
-                  onChange={(event) => update("chamado_id", event.target.value)}
+                  onChange={(event) => updatePositiveNumberField("chamado_id", event.target.value)}
                   required
                 />
               </div>
@@ -164,9 +175,10 @@ export default function NovaManutencaoPage() {
                 <input
                   id="equipamento_id"
                   type="number"
+                  min="1"
                   className="app-form-control"
                   value={form.equipamento_id}
-                  onChange={(event) => update("equipamento_id", event.target.value)}
+                  onChange={(event) => updatePositiveNumberField("equipamento_id", event.target.value)}
                   required
                 />
               </div>
@@ -252,16 +264,16 @@ export default function NovaManutencaoPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-border/80 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6 text-slate-50 shadow-xl">
-          <p className="text-xs uppercase tracking-[0.24em] text-slate-300">Checklist tecnico</p>
-          <div className="mt-4 grid gap-3 text-sm text-slate-200">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <section className="rounded-[28px] border border-border/80 bg-card/95 p-6 shadow-sm">
+          <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Checklist tecnico</p>
+          <div className="mt-4 grid gap-3 text-sm text-foreground/90">
+            <div className="rounded-2xl border border-border/70 bg-muted/35 p-4">
               Confirmar diagnostico e validar o equipamento correto antes de registrar o reparo.
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <div className="rounded-2xl border border-border/70 bg-muted/35 p-4">
               Descrever a acao executada com detalhe suficiente para auditoria e historico.
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <div className="rounded-2xl border border-border/70 bg-muted/35 p-4">
               Atualizar o status final de forma consistente com a condicao real do equipamento.
             </div>
           </div>

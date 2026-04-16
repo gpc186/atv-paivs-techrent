@@ -1,8 +1,8 @@
 // =============================================
 // CONTROLLER DE HISTÓRICO DE MANUTENÇÃO
 // =============================================
-// TODO (alunos): implementar cada função abaixo.
 
+const { withTransaction } = require('../config/database');
 const ManutencaoModel = require('../model/manutencaoModel');
 const EquipamentoModel = require('../model/equipamentModel');
 const ChamadaModel = require('../model/chamadaModel');
@@ -17,7 +17,7 @@ class ManutencaoController {
         return res.status(200).json(historico);
       }
 
-      const manutencoes = await ManutencaoModel.findAll()
+      const manutencoes = await ManutencaoModel.findAll();
 
       return res.status(200).json({ ok: true, manutencoes });
     } catch (erro) {
@@ -34,34 +34,52 @@ class ManutencaoController {
         return res.status(400).json({ erro: "Chamado, equipamento e descrição são obrigatórios." });
       }
 
-      // Validar se o chamado existe e está em atendimento
       const chamado = await ChamadaModel.findById(chamado_id);
       if (!chamado) {
         return res.status(404).json({ erro: "Chamado não encontrado." });
+      }
+
+      if (chamado.equipamento_id !== Number(equipamento_id)) {
+        return res.status(409).json({ erro: "O equipamento informado não corresponde ao chamado selecionado." });
       }
 
       if (chamado.status !== 'em_atendimento' && chamado.status !== 'aberto') {
         return res.status(400).json({ erro: "Apenas chamados abertos ou em atendimento podem ter manutenção registrada." });
       }
 
-      // Validar se o equipamento existe
       const equipamento = await EquipamentoModel.findById(equipamento_id);
       if (!equipamento) {
         return res.status(404).json({ erro: "Equipamento não encontrado." });
       }
 
+      if (
+        req.usuario?.nivel_acesso === "tecnico" &&
+        chamado.tecnico_id &&
+        chamado.tecnico_id !== req.usuario.id
+      ) {
+        return res.status(403).json({ erro: "Você só pode registrar manutenção para chamados atribuídos a você." });
+      }
+
       const tecnico_id = req.usuario.id;
-
-      const novaManutencaoId = await ManutencaoModel.create({ chamado_id, equipamento_id, tecnico_id, descricao });
-
-      await ChamadaModel.updateStatus({ id: chamado_id, status: 'resolvido'});
-
       const novoStatusEquipamento = status_equipamento || 'operacional';
-      
-      await EquipamentoModel.updateStatus({id: equipamento_id, status: novoStatusEquipamento});
 
-      return res.status(201).json({ ok: true, mensagem: `Manutenção registrada! Chamado resolvido. Máquina: ${novoStatusEquipamento}!`, manutencao_id: novaManutencaoId });
+      const novaManutencaoId = await withTransaction(async (connection) => {
+        const manutencaoId = await ManutencaoModel.create(
+          { chamado_id, equipamento_id, tecnico_id, descricao },
+          connection
+        );
 
+        await ChamadaModel.updateStatus({ id: chamado_id, status: 'resolvido' }, connection);
+        await EquipamentoModel.updateStatus({ id: equipamento_id, status: novoStatusEquipamento }, connection);
+
+        return manutencaoId;
+      });
+
+      return res.status(201).json({
+        ok: true,
+        mensagem: `Manutenção registrada! Chamado resolvido. Máquina: ${novoStatusEquipamento}!`,
+        manutencao_id: novaManutencaoId
+      });
     } catch (erro) {
       console.error("Erro ao registrar manutenção:", erro);
       return res.status(500).json({ erro: "Erro interno ao registrar a manutenção." });

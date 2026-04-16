@@ -24,7 +24,7 @@ export default function AuthGate({ children }) {
     }
 
     if (auth && !hasAccess(pathname, user?.nivel_acesso)) {
-      router.replace("/unauthorized");
+      router.replace(getHomeByRole(user?.nivel_acesso));
     }
   }, [auth, pathname, router, user?.nivel_acesso]);
 
