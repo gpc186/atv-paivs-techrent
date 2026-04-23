@@ -4,7 +4,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRightIcon, FilterIcon, WrenchIcon } from "lucide-react";
 import PageSection from "@/components/ui/page-section";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { Card, CardContent } from "@/components/ui/card";
 import { chamadosService } from "@/services/chamados.service";
 import { dashboardService } from "@/services/dashboard.service";
 import {
@@ -81,10 +84,10 @@ export default function TecnicoFilaPage() {
               type="button"
               onClick={() => setFiltro(item)}
               className={cn(
-                "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition",
+                "inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition",
                 filtro === item
                   ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                  : "border-white/20 bg-white/82 text-slate-800 shadow-sm backdrop-blur hover:bg-white"
+                  : "border-border bg-card text-foreground shadow-xs hover:bg-muted"
               )}
             >
               <FilterIcon className="size-3.5" />
@@ -95,33 +98,35 @@ export default function TecnicoFilaPage() {
       </PageSection>
 
       {loading ? (
-        <p className="app-surface-panel text-center text-sm text-slate-600">
-          Carregando fila tecnica...
-        </p>
+        <div className="grid gap-3">
+          {[1, 2, 3].map((item) => (
+            <div key={item} className="h-40 animate-pulse rounded-lg bg-muted" />
+          ))}
+        </div>
       ) : error ? (
-        <p className="app-surface-panel border-destructive/20 bg-destructive/5 text-center text-sm text-destructive">
+        <p className="rounded-lg border border-destructive/20 bg-destructive/5 p-4 text-center text-sm text-destructive">
           {error}
         </p>
       ) : chamadosFiltrados.length === 0 ? (
-        <div className="app-surface-panel border-dashed border-slate-200 text-center text-sm text-slate-600">
-          Nenhum chamado encontrado para o filtro atual.
-        </div>
+        <Empty className="min-h-60">
+          <EmptyHeader>
+            <EmptyTitle>Nenhum chamado encontrado</EmptyTitle>
+            <EmptyDescription>Altere o filtro ou aguarde novos atendimentos para esta fila.</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : (
         <div className="grid gap-4">
           {chamadosFiltrados.map((item) => (
-            <article
-              key={item.chamado_id}
-              className="app-surface-card"
-            >
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <Card key={item.chamado_id}>
+              <CardContent className="flex flex-col gap-4 pt-5 lg:flex-row lg:items-start lg:justify-between">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className={getTicketStatusBadgeClass(item.status)}>
+                    <Badge variant="outline" className={getTicketStatusBadgeClass(item.status)}>
                       {formatEnumLabel(item.status)}
-                    </span>
-                    <span className={getPriorityBadgeClass(item.prioridade)}>
+                    </Badge>
+                    <Badge variant="outline" className={getPriorityBadgeClass(item.prioridade)}>
                       Prioridade {formatEnumLabel(item.prioridade)}
-                    </span>
+                    </Badge>
                   </div>
 
                   <h2 className="mt-4 text-xl font-semibold text-foreground">{item.titulo}</h2>
@@ -129,25 +134,25 @@ export default function TecnicoFilaPage() {
                     {item.descricao || "Sem descricao detalhada informada pelo solicitante."}
                   </p>
 
-                  <div className="mt-4 grid gap-3 text-sm text-slate-600 md:grid-cols-3">
-                    <div className="surface-muted p-3">
-                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                  <div className="mt-4 grid gap-3 text-sm text-muted-foreground md:grid-cols-3">
+                    <div className="rounded-lg border border-border bg-muted/30 p-3">
+                      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                         Solicitante
                       </p>
-                      <p className="mt-1 font-medium text-slate-950">{item.solicitante}</p>
+                      <p className="mt-1 font-medium text-foreground">{item.solicitante}</p>
                     </div>
-                    <div className="surface-muted p-3">
-                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                    <div className="rounded-lg border border-border bg-muted/30 p-3">
+                      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                         Equipamento
                       </p>
-                      <p className="mt-1 font-medium text-slate-950">{item.equipamento}</p>
-                      <p className="text-xs text-slate-500">{item.categoria || "Sem categoria"}</p>
+                      <p className="mt-1 font-medium text-foreground">{item.equipamento}</p>
+                      <p className="text-xs text-muted-foreground">{item.categoria || "Sem categoria"}</p>
                     </div>
-                    <div className="surface-muted p-3">
-                      <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                    <div className="rounded-lg border border-border bg-muted/30 p-3">
+                      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                         Responsavel
                       </p>
-                      <p className="mt-1 font-medium text-slate-950">
+                      <p className="mt-1 font-medium text-foreground">
                         {item.tecnico_responsavel || "Nao atribuido"}
                       </p>
                     </div>
@@ -182,8 +187,8 @@ export default function TecnicoFilaPage() {
                     </Button>
                   )}
                 </div>
-              </div>
-            </article>
+              </CardContent>
+            </Card>
           ))}
         </div>
       )}

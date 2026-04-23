@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { getSessionUser } from "@/lib/auth-storage";
 import { getHomeByRole } from "@/lib/route-guard";
 import { LogoIcon } from "@/components/logo";
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -32,10 +31,10 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" variant="floating" className="page-enter">
-      <SidebarHeader className="">
-        <SidebarMenuButton asChild tooltip="Voltar para o painel" className="h-12 rounded-2xl bg-transparent shadow-none hover:bg-sidebar-accent/60 group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:shadow-none">
+      <SidebarHeader>
+        <SidebarMenuButton asChild tooltip="Voltar para o painel" className="h-12 rounded-lg bg-transparent shadow-none hover:bg-sidebar-accent group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:shadow-none">
           <Link href={roleHome} className="flex min-w-0 items-center gap-3 group-data-[collapsible=icon]:justify-center">
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-sm group-data-[collapsible=icon]:size-8">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-slate-950 text-white shadow-xs group-data-[collapsible=icon]:size-8">
               <LogoIcon className="block size-4 shrink-0" />
             </div>
             <div className="flex min-w-0 flex-col group-data-[collapsible=icon]:hidden">
@@ -51,7 +50,7 @@ export function AppSidebar() {
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                className="rounded-2xl bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg shadow-primary/20 duration-300 ease-out hover:-translate-y-0.5 hover:text-primary-foreground hover:shadow-xl hover:shadow-primary/25 active:bg-primary/90 active:text-primary-foreground"
+                className="rounded-lg bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
                 tooltip={primaryAction.label}
               >
                 <Link href={primaryAction.href}>
@@ -63,7 +62,7 @@ export function AppSidebar() {
             <SidebarMenuItem className="group-data-[collapsible=icon]:hidden">
               <SidebarMenuButton
                 asChild
-                className="rounded-2xl border border-border/70 bg-card/70 shadow-sm"
+                className="rounded-lg border border-border bg-card shadow-xs"
                 tooltip="Ir para o inicio"
               >
                 <Link href={roleHome}>
@@ -84,7 +83,7 @@ export function AppSidebar() {
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
                 asChild
-                className="rounded-xl text-muted-foreground hover:text-foreground"
+                className="rounded-md text-muted-foreground hover:text-foreground"
                 isActive={item.isActive}
                 size="sm">
                 <Link href={item.path}>

@@ -5,7 +5,11 @@ import { useEffect, useState } from "react";
 import { ArrowRightIcon, ClipboardListIcon, PlusIcon } from "lucide-react";
 import { dashboardService } from "@/services/dashboard.service";
 import PageSection from "@/components/ui/page-section";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import { StatCard } from "@/components/dashboard/StatCard";
+import { Card, CardContent } from "@/components/ui/card";
 import { formatEnumLabel, getTicketStatusBadgeClass } from "@/lib/presentation";
 
 export default function ClienteDashboardPage() {
@@ -55,49 +59,47 @@ export default function ClienteDashboardPage() {
       </PageSection>
 
       <div className="grid gap-4 md:grid-cols-3">
-        {[
-          { label: "Total de chamados", value: totalChamados, tone: "text-foreground" },
-          { label: "Abertos", value: chamadosAbertos, tone: "text-sky-600" },
-          { label: "Resolvidos", value: chamadosResolvidos, tone: "text-emerald-600" },
-        ].map((item) => (
-          <div key={item.label} className="app-stat-card">
-            <p className="text-sm text-slate-600">{item.label}</p>
-            <p className={`mt-3 text-4xl font-semibold ${item.tone}`}>{item.value}</p>
-          </div>
-        ))}
+        <StatCard title="Total de chamados" value={totalChamados} color="primary" />
+        <StatCard title="Abertos" value={chamadosAbertos} color="accent" />
+        <StatCard title="Resolvidos" value={chamadosResolvidos} color="primary" trend={12} />
       </div>
 
       <PageSection title="Ultimos chamados" description="Resumo rapido para saber o que ainda precisa de retorno.">
         {loading ? (
-          <p className="text-sm text-muted-foreground">Carregando chamados...</p>
+          <div className="grid gap-3">
+            {[1, 2, 3].map((item) => (
+              <div key={item} className="h-24 animate-pulse rounded-lg bg-muted" />
+            ))}
+          </div>
         ) : error ? (
           <p className="text-sm text-destructive">Erro: {error}</p>
         ) : chamados.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border px-4 py-10 text-center text-sm text-muted-foreground">
-            Voce ainda nao possui chamados no momento.
-          </div>
+          <Empty className="min-h-52">
+            <EmptyHeader>
+              <EmptyTitle>Nenhum chamado encontrado</EmptyTitle>
+              <EmptyDescription>Abra seu primeiro chamado para acompanhar o atendimento por aqui.</EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         ) : (
           <div className="grid gap-4">
             {chamados.slice(0, 5).map((chamado) => (
-              <Link
-                key={chamado.id}
-                href={`/cliente/chamados/${chamado.id}`}
-                className="app-surface-card"
-              >
-                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                  <div className="min-w-0">
-                    <h3 className="text-lg font-semibold text-foreground">{chamado.titulo}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {chamado.equipamento_nome || "Equipamento nao informado"}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className={getTicketStatusBadgeClass(chamado.status)}>
-                      {formatEnumLabel(chamado.status)}
-                    </span>
-                    <ArrowRightIcon className="size-4 text-muted-foreground" />
-                  </div>
-                </div>
+              <Link key={chamado.id} href={`/cliente/chamados/${chamado.id}`}>
+                <Card className="transition-shadow hover:shadow-md">
+                  <CardContent className="flex flex-col gap-3 pt-5 md:flex-row md:items-start md:justify-between">
+                    <div className="min-w-0">
+                      <h3 className="text-lg font-semibold text-foreground">{chamado.titulo}</h3>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {chamado.equipamento_nome || "Equipamento nao informado"}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Badge variant="outline" className={getTicketStatusBadgeClass(chamado.status)}>
+                        {formatEnumLabel(chamado.status)}
+                      </Badge>
+                      <ArrowRightIcon className="size-4 text-muted-foreground" />
+                    </div>
+                  </CardContent>
+                </Card>
               </Link>
             ))}
           </div>

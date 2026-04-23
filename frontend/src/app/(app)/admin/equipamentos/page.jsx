@@ -9,7 +9,17 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import PageSection from "@/components/ui/page-section";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { equipamentosService } from "@/services/equipamentos.service";
 import {
   formatEnumLabel,
@@ -158,7 +168,7 @@ export default function AdminEquipamentosPage() {
         title={editingId ? "Editar equipamento" : "Novo equipamento"}
         description="Cadastre, ajuste status e mantenha o inventario tecnico organizado."
       >
-        <form onSubmit={handleSubmit} className="app-form-panel grid gap-4">
+        <form onSubmit={handleSubmit} className="grid gap-4">
           <div className="grid gap-2">
             <label htmlFor="nome" className="app-form-label">
               Nome
@@ -235,13 +245,13 @@ export default function AdminEquipamentosPage() {
           </div>
 
           {error ? (
-            <div className="rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+            <div className="rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
               {error}
             </div>
           ) : null}
 
           {feedback ? (
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
               {feedback}
             </div>
           ) : null}
@@ -271,10 +281,10 @@ export default function AdminEquipamentosPage() {
                 type="button"
                 onClick={() => setStatusFilter(status)}
                 className={cn(
-                  "rounded-full border px-4 py-2 text-sm font-medium transition",
+                  "rounded-lg border px-4 py-2 text-sm font-medium transition",
                   statusFilter === status
                     ? "border-primary bg-primary text-primary-foreground"
-                    : "border-white/20 bg-white/82 text-slate-800 shadow-sm backdrop-blur hover:bg-white"
+                    : "border-border bg-card text-foreground shadow-xs hover:bg-muted"
                 )}
               >
                 {formatEnumLabel(status)} (
@@ -289,77 +299,93 @@ export default function AdminEquipamentosPage() {
           {loading ? (
             <p className="mt-4 text-sm text-muted-foreground">Carregando equipamentos...</p>
           ) : equipamentosFiltrados.length === 0 ? (
-            <div className="mt-4 rounded-2xl border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
-              Nenhum equipamento encontrado para o filtro atual.
-            </div>
+            <Empty className="mt-4 min-h-56">
+              <EmptyHeader>
+                <EmptyTitle>Nenhum equipamento encontrado</EmptyTitle>
+                <EmptyDescription>O filtro atual nao retornou itens no inventario.</EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           ) : (
-            <div className="mt-5 grid gap-4 xl:grid-cols-2">
-              {equipamentosFiltrados.map((item) => (
-                <article
-                  key={item.id}
-                  className="app-surface-card"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      <span className={getEquipmentStatusBadgeClass(item.status)}>
-                        {formatEnumLabel(item.status)}
-                      </span>
-                      <h3 className="mt-3 text-lg font-semibold text-foreground">{item.nome}</h3>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {item.categoria || "Sem categoria"} - {item.patrimonio}
-                      </p>
-                    </div>
-                    {item.status === "desativado" ? (
-                      <ShieldAlertIcon className="size-5 text-rose-500" />
-                    ) : null}
-                  </div>
-
-                  <p className="mt-4 text-sm leading-6 text-muted-foreground">
-                    {item.descricao || "Sem descricao adicional cadastrada."}
-                  </p>
-
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    <Button type="button" variant="outline" size="sm" onClick={() => startEditMode(item)}>
-                      <PencilIcon />
-                      Editar
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleStatusChange(item.id, "operacional")}
-                    >
-                      Operacional
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleStatusChange(item.id, "em_manutencao")}
-                    >
-                      Em manutencao
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleStatusChange(item.id, "desativado")}
-                    >
-                      Desativar
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDelete(item.id)}
-                      disabled={deletingId === item.id}
-                    >
-                      <Trash2Icon />
-                      {deletingId === item.id ? "Excluindo..." : "Excluir"}
-                    </Button>
-                  </div>
-                </article>
-              ))}
+            <div className="mt-5 rounded-xl border border-border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Equipamento</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Categoria</TableHead>
+                    <TableHead>Patrimonio</TableHead>
+                    <TableHead className="text-right">Acoes</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {equipamentosFiltrados.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-foreground">{item.nome}</span>
+                            {item.status === "desativado" ? (
+                              <ShieldAlertIcon className="size-4 text-rose-500" />
+                            ) : null}
+                          </div>
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            {item.descricao || "Sem descricao adicional cadastrada."}
+                          </p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className={getEquipmentStatusBadgeClass(item.status)}>
+                          {formatEnumLabel(item.status)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{item.categoria || "Sem categoria"}</TableCell>
+                      <TableCell>{item.patrimonio}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex flex-wrap justify-end gap-2">
+                          <Button type="button" variant="outline" size="sm" onClick={() => startEditMode(item)}>
+                            <PencilIcon />
+                            Editar
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleStatusChange(item.id, "operacional")}
+                          >
+                            Operacional
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleStatusChange(item.id, "em_manutencao")}
+                          >
+                            Em manutencao
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleStatusChange(item.id, "desativado")}
+                          >
+                            Desativar
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDelete(item.id)}
+                            disabled={deletingId === item.id}
+                          >
+                            <Trash2Icon />
+                            {deletingId === item.id ? "Excluindo..." : "Excluir"}
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           )}
         </PageSection>

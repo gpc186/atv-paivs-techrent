@@ -8,6 +8,7 @@ import {
   TrendingUpIcon,
 } from "lucide-react";
 import PageSection from "@/components/ui/page-section";
+import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import { dashboardService } from "@/services/dashboard.service";
 import { ActivityTimeline } from "@/components/dashboard/ActivityTimeline";
 import { ChartCard } from "@/components/dashboard/ChartCard";
@@ -40,7 +41,7 @@ export default function AdminDashboardPage() {
       description="Visao consolidada da operacao para acompanhar volume de chamados, saude do inventario e atividade recente."
     >
       {error ? (
-        <div className="mb-5 rounded-2xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+        <div className="mb-5 rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
           {error}
         </div>
       ) : null}
@@ -49,12 +50,12 @@ export default function AdminDashboardPage() {
         <div className="dashboard-grid">
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="surface-muted h-36 animate-pulse" />
+              <div key={i} className="h-36 animate-pulse rounded-lg bg-muted" />
             ))}
           </div>
           <div className="grid gap-4 xl:grid-cols-2">
-            <div className="surface-muted h-80 animate-pulse" />
-            <div className="surface-muted h-80 animate-pulse" />
+            <div className="h-80 animate-pulse rounded-lg bg-muted" />
+            <div className="h-80 animate-pulse rounded-lg bg-muted" />
           </div>
         </div>
       ) : data ? (
@@ -91,7 +92,12 @@ export default function AdminDashboardPage() {
               {data.estatisticas_chamados?.filter((item) => item.status).length > 0 ? (
                 <SimplePieChart data={data.estatisticas_chamados.filter((item) => item.status)} />
               ) : (
-                <p className="py-8 text-center text-sm text-muted-foreground">Nenhum dado disponivel</p>
+                <Empty className="min-h-64 border-0">
+                  <EmptyHeader>
+                    <EmptyTitle>Nenhum dado disponivel</EmptyTitle>
+                    <EmptyDescription>Quando houver distribuicao de chamados por status, ela sera exibida aqui.</EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
               )}
             </ChartCard>
 
@@ -99,7 +105,12 @@ export default function AdminDashboardPage() {
               {data.estatisticas_equipamentos?.filter((item) => item.status).length > 0 ? (
                 <SimpleBarChart data={data.estatisticas_equipamentos.filter((item) => item.status)} />
               ) : (
-                <p className="py-8 text-center text-sm text-muted-foreground">Nenhum dado disponivel</p>
+                <Empty className="min-h-64 border-0">
+                  <EmptyHeader>
+                    <EmptyTitle>Nenhum dado disponivel</EmptyTitle>
+                    <EmptyDescription>Os indicadores de equipamentos vao aparecer aqui quando houver dados.</EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
               )}
             </ChartCard>
           </div>

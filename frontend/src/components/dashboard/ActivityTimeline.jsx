@@ -1,15 +1,17 @@
 "use client";
 
-import { TicketIcon, WrenchIcon, Clock } from "lucide-react";
+import { Clock, TicketIcon, WrenchIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
 function getIcon(iconType) {
   switch (iconType) {
     case "wrench":
-      return <WrenchIcon className="w-4 h-4" />;
+      return <WrenchIcon className="size-4" />;
     case "ticket":
-      return <TicketIcon className="w-4 h-4" />;
+      return <TicketIcon className="size-4" />;
     default:
-      return <Clock className="w-4 h-4" />;
+      return <Clock className="size-4" />;
   }
 }
 
@@ -19,16 +21,16 @@ function formatTimeAgo(timestamp) {
   const seconds = Math.floor((now - date) / 1000);
 
   if (seconds < 60) return "agora";
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m atrás`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h atrás`;
-  if (seconds < 604800) return `${Math.floor(seconds / 86400)}d atrás`;
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m atras`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h atras`;
+  if (seconds < 604800) return `${Math.floor(seconds / 86400)}d atras`;
   return date.toLocaleDateString("pt-BR");
 }
 
 export function ActivityTimeline({ activities = [], loading = false, error = null }) {
   if (error) {
     return (
-      <div className="text-sm text-red-600 dark:text-red-500 p-4 bg-red-50 dark:bg-red-950/20 rounded">
+      <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4 text-sm text-destructive">
         {error}
       </div>
     );
@@ -36,38 +38,47 @@ export function ActivityTimeline({ activities = [], loading = false, error = nul
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-sm text-muted-foreground animate-pulse">Carregando atividades...</div>
+      <div className="grid gap-3">
+        {[1, 2, 3].map((item) => (
+          <div key={item} className="h-16 animate-pulse rounded-lg bg-muted" />
+        ))}
       </div>
     );
   }
 
   if (!activities || activities.length === 0) {
-    return <div className="text-sm text-muted-foreground text-center py-8">Nenhuma atividade recente</div>;
+    return (
+      <Empty className="min-h-44">
+        <EmptyHeader>
+          <EmptyTitle>Nenhuma atividade recente</EmptyTitle>
+          <EmptyDescription>As ultimas movimentacoes do sistema vao aparecer aqui.</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    );
   }
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col gap-3">
       {activities.map((activity, index) => (
         <div
           key={`${activity.tipo}-${activity.item_id}-${index}`}
-          className="surface-muted flex gap-3 p-4 card-hover-lift"
+          className="flex gap-3 rounded-lg border border-border bg-muted/30 p-4"
         >
-          <div className="flex-shrink-0 mt-1">
-            <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm">
+          <div className="mt-1 flex shrink-0">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
               {getIcon(activity.icon_type)}
             </div>
           </div>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex-1">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-foreground">{activity.descricao}</p>
                 <p className="mt-1 text-xs text-muted-foreground">{activity.usuario_nome}</p>
               </div>
-              <span className="flex-shrink-0 whitespace-nowrap rounded-full border border-border/70 bg-card px-2 py-1 text-[11px] font-medium text-muted-foreground shadow-sm">
+              <Badge variant="outline" className="shrink-0 whitespace-nowrap">
                 {formatTimeAgo(activity.timestamp)}
-              </span>
+              </Badge>
             </div>
           </div>
         </div>

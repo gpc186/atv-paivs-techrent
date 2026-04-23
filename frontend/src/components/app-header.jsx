@@ -19,10 +19,10 @@ export function AppHeader() {
 
 	return (
         <header
-            className={cn("sticky top-0 z-20 border-b border-border/50 bg-background/72 px-3 py-3 backdrop-blur-xl md:px-4")}>
+            className={cn("sticky top-0 z-20 border-b border-border bg-background/95 px-3 py-3 backdrop-blur md:px-4")}>
             <div className="flex w-full items-center justify-between gap-4">
             <div className="min-w-0 flex items-center gap-3">
-				<div className="rounded-2xl border border-border/70 bg-card/70 p-1 shadow-sm">
+				<div className="rounded-lg border border-border bg-card p-1 shadow-xs">
                     <CustomSidebarTrigger />
                 </div>
 				<Separator
@@ -37,7 +37,7 @@ export function AppHeader() {
 			</div>
             <div className="flex items-center gap-3">
 				<div className="relative">
-					<Button aria-label="Notifications" size="icon" variant="ghost" className="rounded-2xl border border-border/70 bg-card/70 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary/10 hover:shadow-md">
+					<Button aria-label="Notifications" size="icon" variant="ghost" className="rounded-lg border border-border bg-card shadow-xs transition-colors hover:bg-muted">
 						<BellIcon />
 					</Button>
 					{notificationCount > 0 && (
